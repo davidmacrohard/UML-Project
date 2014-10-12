@@ -16,7 +16,8 @@ public class UMLCanvas extends JPanel implements MouseListener {
 	
 	
 	static final int Z_TOP_CHILD 	= 0;
-	private static UMLShape lastSelectedShape = null;
+	private static UMLShape firstSelectedShape = null;
+	private static UMLShape secondSelectedShape = null;
 	
 	private UMLToolBar umlToolBar = null; // Used to track state of the toggle buttons (better way perhaps?)
 	private UMLPopupMenu umlPopupMenu = null;	
@@ -53,57 +54,142 @@ public class UMLCanvas extends JPanel implements MouseListener {
 	
 	public void setLastSelected(UMLShape s)
 	{
-		lastSelectedShape = s;
+		firstSelectedShape = s;
 	}
 	
 	public UMLShape getLastSelected()
 	{
-		return lastSelectedShape;
+		return firstSelectedShape;
+	}
+	
+	public void setSecondSelected(UMLShape s)
+	{
+		secondSelectedShape = s;
+	}
+
+	public UMLShape getSecondSelected()
+	{
+		return secondSelectedShape;
 	}
 	
 	
 	public void updateSelectedShape(UMLShape newSelectedShape)
 	{
-		if(newSelectedShape == null)
+		if (umlToolBar.getBtnShape_Class().isSelected())
 		{
-			System.out.println("newSelected == null");
-			return;
+			if(newSelectedShape == null)
+			{
+				System.out.println("newSelected == null");
+				return;
+			}
+
+			// If this is the same shape as last time bail out
+			if (newSelectedShape == firstSelectedShape)
+			{
+				System.out.println("newSelectedShape == firstSelectedShape");
+				return;
+			}
+
+
+			if (firstSelectedShape != null)
+			{
+				System.out.println("firstSelectedShape != null");
+
+				// Update the last selected shape's selected state to false
+				firstSelectedShape.setSelected(false);
+			}
+
+			if (secondSelectedShape == null)
+			{
+				System.out.println("secondSelectedShape == null");
+
+
+			}
+
+			System.out.println("before update");
+
+			// Update the new selected shape's z order and set it's selected state to true
+			this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
+			newSelectedShape.setSelected(true);
+
+
+			System.out.println("before last selected update");
+			// Set the new lastSelectedState
+			firstSelectedShape = newSelectedShape;
+
+			// repaint
+			this.repaint();
+
+			System.out.println("firstSelectedShape = " + firstSelectedShape);
+
 		}
+
 		
-		// If this is the same shape as last time bail out
-		if(newSelectedShape == lastSelectedShape)
+		
+		if(umlToolBar.getBtnShape_Line().isSelected())
 		{
-			System.out.println("newSelectedShape == lastSelectedShape");
-			return;
+			if (firstSelectedShape != null && secondSelectedShape == null)
+			{	
+				//second shape is the same as the first
+				if (firstSelectedShape == newSelectedShape)
+				{
+					System.out.println("firstSelectedShape == newSelectedShape");
+					return;
+				}
+				// second shape is different from first, 
+				if (firstSelectedShape != newSelectedShape)
+				{
+					System.out.println("First is selected, second isn't");
+					secondSelectedShape = newSelectedShape;
+					System.out.println("Now second shape selected");
+					this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
+					
+					
+					if (firstSelectedShape != null && secondSelectedShape != null)
+					{
+						System.out.println("Reached Here");
+						
+						System.out.println("Coordinates for firstSeletedShape: " +firstSelectedShape.getX() +  " , " + firstSelectedShape.getY());
+						System.out.println("Coordinates for secondSeletedShape: " +secondSelectedShape.getX() +  " , " + secondSelectedShape.getY());
+						
+						
+						
+						this.add(new UMLLine(firstSelectedShape, secondSelectedShape, this));
+						
+						
+						System.out.println("Reached Here");
+						this.repaint();
+						
+					}
+					firstSelectedShape = null;
+					secondSelectedShape = null;
+					return;
+
+				}
+				
+			}
+			// check to see if its the first shape
+			if (firstSelectedShape == null && secondSelectedShape == null)
+			{
+				System.out.println("No Shapes Selected");
+				firstSelectedShape = newSelectedShape;
+				System.out.println("First shape is selected");
+				this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
+			}
+
+			// first shape is occupied, check to see if second shape and occupy it
+
 		}
-		
-		
-		if(lastSelectedShape != null)
-		{
-			System.out.println("lastSelectedShape != null");
-			
-			// Update the last selected shape's selected state to false
-			lastSelectedShape.setSelected(false);
-		}
-		
-		System.out.println("before update");
-		
-		// Update the new selected shape's z order and set it's selected state to true
-		this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
-		newSelectedShape.setSelected(true);
-		
-		
-		System.out.println("before last selected update");
-		// Set the new lastSelectedState
-		lastSelectedShape = newSelectedShape;
-		
-		// repaint
-		this.repaint();
-		
-		
-		System.out.println("lastSelectedShape = " + lastSelectedShape);
-		
 	}
+		
+		
+		
+		
+		
+		
+		
+		
+	
 	
 	
 	@Override
