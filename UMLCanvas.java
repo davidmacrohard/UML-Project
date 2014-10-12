@@ -1,78 +1,129 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
-
+import javax.swing.JToggleButton;
 
 @SuppressWarnings("serial")
 public class UMLCanvas extends JPanel implements MouseListener {
 
 	@SuppressWarnings("unused")
-	private Image img = null; 	// We Can load an image to use as our background, 
-								// perhaps an image with 'dots' for 'alignment' purposes?
-	
-	
-	static final int Z_TOP_CHILD 	= 0;
+	private Image img = null; // We Can load an image to use as our background,
+								// perhaps an image with 'dots' for 'alignment'
+								// purposes?
+
+	static final int Z_TOP_CHILD = 0;
+	static final int Z_LINE_POS = 1000;
 	private static UMLShape firstSelectedShape = null;
 	private static UMLShape secondSelectedShape = null;
-	
-	private UMLToolBar umlToolBar = null; // Used to track state of the toggle buttons (better way perhaps?)
-	private UMLPopupMenu umlPopupMenu = null;	
-	
-	
-	UMLCanvas()
-	{
-		// TODO Initialization code as needed
-		
-		umlPopupMenu = new UMLPopupMenu();
+
+	private UMLToolBar umlToolBar = null; // Used to track state of the toggle
+											// buttons (better way perhaps?)
+	private UMLCanvas_PopupMenu popupMenu = null; // Used for the popup menu
+
+	private UMLShape umlShapeBeingEdited = null; // Used to save the UML shape
+													// that is being edited, if
+													// any.
+
+	UMLCanvas() {
+		popupMenu = new UMLCanvas_PopupMenu(this);
 		addMouseListener(this);
-		
-		
+
 		this.setBackground(Color.WHITE);
 		this.setLayout(null);
-		
-		
+
+		// Tap into the keyboard focus manager to handle keyboard events
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+				.addKeyEventDispatcher(new KeyEventDispatcher() {
+					public boolean dispatchKeyEvent(KeyEvent e) {
+						// If the escape key is pressed
+						if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+							// If there is an umlobject being edited
+							if (umlShapeBeingEdited != null) {
+								// Set it's editing to false
+								umlShapeBeingEdited.setEditing(false);
+
+								// No more shape being edited
+								umlShapeBeingEdited = null;
+							}
+						}
+
+						// If the key should not be dispatched to the
+						// focused component, set discardEvent to true
+						boolean discardEvent = false;
+
+						return discardEvent;
+					}
+
+				});
+
 	}
-	
-	
-	// Overload to set the background image to draw in paint update if we wish to add
+
+	// Overload to set the background image to draw in paint update if we wish
+	// to add
 	// a dotted background on the canvas
-	UMLCanvas(Image imgObject)
-	{
+	UMLCanvas(Image imgObject) {
 		img = imgObject;
 	}
-	
-	
-	
-	public void setUMLToolBar(UMLToolBar toolbar)
-	{
+
+	public void setUMLToolBar(UMLToolBar toolbar) {
 		umlToolBar = toolbar;
 	}
-	
-	public void setLastSelected(UMLShape s)
-	{
+
+	public void setLastSelected(UMLShape s) {
 		firstSelectedShape = s;
 	}
-	
-	public UMLShape getLastSelected()
-	{
+
+	public UMLShape getLastSelected() {
 		return firstSelectedShape;
 	}
-	
-	public void setSecondSelected(UMLShape s)
-	{
+
+	public void setSecondSelected(UMLShape s) {
 		secondSelectedShape = s;
 	}
 
-	public UMLShape getSecondSelected()
-	{
+	public UMLShape getSecondSelected() {
 		return secondSelectedShape;
 	}
-	
-	
+
+	public void setUMLShapeBeingEdited(UMLShape umlShape) {
+		// If there is a previous umlshape being edited, set its's
+		// editing to false first
+		if (umlShapeBeingEdited != null) {
+			umlShapeBeingEdited.setEditing(false);
+		}
+
+		// Update the shape being edited
+		umlShapeBeingEdited = umlShape;
+
+		// CHANGE IF YOU GUYS FIND BEST
+		// Unselect any selected ToolBar items
+		unselectToolBarItems();
+	}
+
+	public void unselectToolBarItems() {
+		// Loop over all the items on the toolbar and set their selected state
+		// to false
+		if (umlToolBar != null) {
+			for (int current = 0; current < umlToolBar.getComponentCount(); current++) {
+				((JToggleButton) umlToolBar.getComponent(current))
+						.setSelected(false);
+
+			}
+		}
+
+	}
+
+	public UMLShape getUMLShapeBeingEdited() {
+		return umlShapeBeingEdited;
+	}
+
 	public void updateSelectedShape(UMLShape newSelectedShape)
 	{
 		if (umlToolBar.getBtnShape_Class().isSelected())
@@ -154,7 +205,10 @@ public class UMLCanvas extends JPanel implements MouseListener {
 						
 						
 						
-						this.add(new UMLLine(firstSelectedShape, secondSelectedShape, this));
+						UMLLine newLine = new UMLLine(firstSelectedShape, secondSelectedShape, this);
+						this.setComponentZOrder(newLine, Z_LINE_POS);
+						
+						
 						
 						
 						System.out.println("Reached Here");
@@ -181,70 +235,80 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
 		}
 	}
-		
-		
-		
-		
-		
-		
-		
-		
-	
-	
-	
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
 		// If the left mouse button is pressed and the umlToolbar is valid
-		if(e.getButton() == MouseEvent.BUTTON1 && umlToolBar != null)
-		{
-		
+		if (e.getButton() == MouseEvent.BUTTON1 && umlToolBar != null) {
+
 			// Check if there is a child at this location first
 			Component c = this.findComponentAt(e.getX(), e.getY());
-			System.out.println("x: " + e.getX() + " y: " + e.getY() + "  findComponentAt.class = " + c.getClass());
-			
-			// If the left mouse click is inside the canvas object .. check if any toggle buttons are selected
-			// if so create a new object at the mouse position
-			if(c.getClass() == this.getClass())
-			{
-				// TODO Do a loop and take the correct action based on the toggled button
-				// umlToolBar.getToggledButtons(); <-- add toggle buttons to an array list
+			System.out.println("x: " + e.getX() + " y: " + e.getY()
+					+ "  findComponentAt.class = " + c.getClass());
+
+			// If the left mouse click is inside the canvas object .. check if
+			// any toggle buttons are selected
+			// if so create a new object at the mouse position if the Component
+			// 'c' is equal to the canvas object
+			if (c.getClass() == this.getClass()) {
+				// TODO Do a loop and take the correct action based on the
+				// toggled button
+				// umlToolBar.getToggledButtons(); <-- add toggle buttons to an
+				// array list
 
 				// One for now - add more later
 				// Check if the class toggle button is selected
-				if(umlToolBar.getBtnShape_Class().isSelected())
-				{
-				
+				if (umlToolBar.getBtnShape_Class().isSelected()) {
+
 					this.add(new UMLShape_Class(e.getX(), e.getY(), false));
-					this.repaint();										
-									
-					// De-select the class shape? or leave toggled to create more class objects?
+					this.repaint();
+
+					// De-select the class shape? or leave toggled to create
+					// more class objects?
 					// Design decision we need to decide on.
 				}
+
+				// If no umlToolBar items are selected, and the user just
+				// randomly clicked on the canvas itself
+				// Check if there is a umlShapeBeingEdit object, and if so , set
+				// it's editing to false.
+				if (umlShapeBeingEdited != null) {
+					umlShapeBeingEdited.setEditing(false);
+					// No longer an editing object
+					umlShapeBeingEdited = null;
+				}
+
 			}
 
-			// If the class at the location x,y is of a UMLShape, set it's selection to true
-			else if(c instanceof UMLShape)
-			{
-				updateSelectedShape((UMLShape)c);
+			// If the class at the location x,y is of a UMLShape, set it's
+			// selection to true
+			// also change any editing shape if one is currently being edited.
+			else if (c instanceof UMLShape) {
+				// Update the selected shape
+				updateSelectedShape((UMLShape) c);
+
+				// Stop editing any shape if one is being edited
+				if (umlShapeBeingEdited != null) {
+					umlShapeBeingEdited.setEditing(false);
+					;
+					umlShapeBeingEdited = null;
+				}
 			}
 		}
-		
-		
-		
+
 	}
 
-	
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -255,14 +319,13 @@ public class UMLCanvas extends JPanel implements MouseListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		showPopup(e);
-		
+
 	}
 
-	private void showPopup(MouseEvent e)
-	{
-		if(e.isPopupTrigger())
-		{
-			umlPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+	private void showPopup(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			popupMenu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
+
 }

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 public abstract class UMLShape extends JPanel implements MouseListener, MouseMotionListener{
 	
 	protected boolean isSelected = false;
+	protected boolean bEditing = false;
 	
 	UMLShape(int x, int y, boolean selected)
 	{
@@ -26,6 +27,17 @@ public abstract class UMLShape extends JPanel implements MouseListener, MouseMot
 	public boolean selectedState()
 	{
 		return isSelected;
+	}
+	
+	
+	public void setEditing(boolean isEditing)
+	{
+		bEditing = isEditing;
+	}
+	
+	public boolean isEditing()
+	{
+		return bEditing;
 	}
 
 }

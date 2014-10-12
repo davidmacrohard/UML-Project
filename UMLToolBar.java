@@ -27,8 +27,8 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 		btnShape_Line.addActionListener(this);
 
 		
+		// Create a grid bad constraints layout for this toolbar
 		GridBagConstraints   gbc = new GridBagConstraints ();
-		
 		
 		gbc.gridx = 0;
 		gbc.gridy = 0;

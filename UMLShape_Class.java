@@ -11,15 +11,21 @@ import javax.swing.JTextArea;
 @SuppressWarnings("serial")
 public class UMLShape_Class extends UMLShape{
 	
+	// The text area for this class object
 	private JTextArea classText = new JTextArea("Class Name\n____________\nFunctions\n____________\nVariables");
+	// Save the mouse position when the user drags the mouse over us
 	private Point mousePosition;
+	private boolean leftMousePressed = false;
+	private boolean bEditingTextArea = false;
+	private UMLShape_Class_PopupMenu popupMenu = null; // Used for the popup menu
 	
 	UMLShape_Class(int x, int y, boolean selected)
 	{
 		super(x, y, selected);	
 		
-		classText.setLocation(4,2);
-		classText.setSize(this.getHeight() - 4, this.getWidth() - 4);
+		// Setup the JTextArea
+		classText.setLocation(2, 1);
+		classText.setSize(this.getHeight(), this.getWidth());
 		classText.setOpaque(false);
 		classText.setEditable(false);
 		classText.setBackground(Color.white);
@@ -28,6 +34,9 @@ public class UMLShape_Class extends UMLShape{
 		classText.addMouseListener(this);
 		classText.addMouseMotionListener(this);
 		
+		// Create the popup menu for the class object
+		popupMenu = new UMLShape_Class_PopupMenu(this);
+		
 		this.add(classText);
 	}
 
@@ -35,24 +44,70 @@ public class UMLShape_Class extends UMLShape{
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-	
 		
 		// Only if the left mouse button was clicked, do we update the "focus" window
 		// Can change to right mouse also? or middle and popup a menu popup? decision we have to make
 		if(e.getButton() == MouseEvent.BUTTON1)
 		{
+			// The user clicked on the JTextArea
 			if(e.getSource() instanceof JTextArea)
 			{
+				// Get the parent of the JTextArea (us)
 				UMLShape s = (UMLShape)e.getComponent().getParent();
-				UMLCanvas c = (UMLCanvas)s.getParent();
-			
-				c.updateSelectedShape(s);
+				// Get the canvas object
+				UMLCanvas canvas = (UMLCanvas)s.getParent();
+				// Update the selected shape in the canvas 
+				canvas.updateSelectedShape(s);
+				
+				
+				// If the user double clicked us, go into edit mode
+				if(e.getClickCount() == 2 && !e.isConsumed())
+				{
+					// Set the canvas object to be this
+					canvas.setUMLShapeBeingEdited(this);					
+					
+					// Set our editing to true
+					setEditing(true);
+										
+					// We handled it ..
+					e.consume();
+				}
+				
 			}
 		}
 				
 		
 	}
+	
+	
+	public void setEditing(boolean isEditing)
+	{
+		if(isEditing)
+		{
+			classText.setFocusable(true);
+			classText.setEditable(true);
+			classText.setBackground(Color.lightGray);
+			classText.setOpaque(true);
+			
+			bEditingTextArea = true;
+		}
+		else
+		{
+			classText.setFocusable(false);
+			classText.setEditable(false);
+			classText.setBackground(Color.WHITE);
+			classText.setOpaque(false);
+			
+			bEditingTextArea = false;
+		}
+		
+	}
+	
+	public boolean isEditing()
+	{
+		return bEditingTextArea;
+	}
+	
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
@@ -68,22 +123,46 @@ public class UMLShape_Class extends UMLShape{
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		if(arg0.getButton() == MouseEvent.BUTTON1)
+		{
+			leftMousePressed = true;
+		}
 		
+		showPopup(arg0);
 	}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		if(arg0.getButton() == MouseEvent.BUTTON1)
+		{
+			leftMousePressed = false;
+		}
 		
+		showPopup(arg0);
 	}
 	
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// Update this objects location based on the mouse position		
-		setUMLShape_Location(arg0.getX(), arg0.getY());
+		
+		// Only move with left mouse click
+		if(leftMousePressed)
+		{
+		
+			// Update this objects location based on the mouse position		
+			setUMLShape_Location(arg0.getX(), arg0.getY());
+		}
 	}
 
+	
+	private void showPopup(MouseEvent e)
+	{
+		if(e.isPopupTrigger())
+		{
+			popupMenu.show(e.getComponent(), e.getX(), e.getY());
+		}
+	}
+	
+	
 	public void setUMLShape_Location(double x, double y)
 	{
 		// Get the current x,y location for this UMLShape class object
@@ -149,9 +228,7 @@ public class UMLShape_Class extends UMLShape{
 			g2D.setColor(Color.BLACK);
 			g2D.drawRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
 		
-		}
-		
-		
+		}	
 		
 
 	}

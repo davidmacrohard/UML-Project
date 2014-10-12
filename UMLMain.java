@@ -10,7 +10,7 @@ public class UMLMain {
 		UMLMainWindow mainWindow 	= new UMLMainWindow();	
 		UMLCanvas umlCanvas 		= new UMLCanvas();
 		UMLToolBar umlToolBar 		= new UMLToolBar("UML_Main_ToolBar", JToolBar.VERTICAL);
-		UMLMainMenu mainMenu 		= new UMLMainMenu();
+		UMLMainMenu mainMenu 		= new UMLMainMenu(mainWindow);
 		
 		
 		mainWindow.add(umlToolBar, BorderLayout.WEST);
@@ -19,8 +19,7 @@ public class UMLMain {
 		
 		
 		mainWindow.add(umlCanvas, BorderLayout.CENTER);
-		mainWindow.setVisible(true);	
-
+		mainWindow.setVisible(true);
 	}
 
 }
