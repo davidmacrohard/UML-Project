@@ -180,6 +180,8 @@ public class UMLShape_Class extends UMLShape{
 		// stay within the bounds of the JTextArea. 
 		this.setLocation((int)(curX + x - mousePosition.x),
 						(int)(curY + y - mousePosition.y));
+		
+		this.getParent().repaint();
 	}
 
 

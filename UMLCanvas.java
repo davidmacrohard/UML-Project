@@ -19,7 +19,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
 								// purposes?
 
 	static final int Z_TOP_CHILD = 0;
-	static final int Z_LINE_POS = 1000;
+	//static final int Z_LINE_POS = 1000;
 	private static UMLShape firstSelectedShape = null;
 	private static UMLShape secondSelectedShape = null;
 
@@ -206,9 +206,9 @@ public class UMLCanvas extends JPanel implements MouseListener {
 						
 						
 						UMLLine newLine = new UMLLine(firstSelectedShape, secondSelectedShape, this);
-						this.setComponentZOrder(newLine, Z_LINE_POS);
+					//	this.setComponentZOrder(newLine, Z_LINE_POS);
 						
-						
+						this.add(newLine);
 						
 						
 						System.out.println("Reached Here");
@@ -246,6 +246,22 @@ public class UMLCanvas extends JPanel implements MouseListener {
 			Component c = this.findComponentAt(e.getX(), e.getY());
 			System.out.println("x: " + e.getX() + " y: " + e.getY()
 					+ "  findComponentAt.class = " + c.getClass());
+			
+			if (c.getClass()  !=  this.getClass())
+			{
+				if(umlToolBar.getBtnShape_Class().isSelected())
+				{
+					
+					UMLShape_Class newShape = new UMLShape_Class(e.getX(), e.getY(), false);
+					
+					this.add(newShape);
+					
+					this.setComponentZOrder(newShape, Z_TOP_CHILD);
+					
+	
+					this.repaint();										
+				}
+			}
 
 			// If the left mouse click is inside the canvas object .. check if
 			// any toggle buttons are selected
