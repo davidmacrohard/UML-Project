@@ -112,8 +112,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
 		// to false
 		if (umlToolBar != null) {
 			for (int current = 0; current < umlToolBar.getComponentCount(); current++) {
-				((JToggleButton) umlToolBar.getComponent(current))
-						.setSelected(false);
+				((JToggleButton) umlToolBar.getComponent(current)).setSelected(false);
 
 			}
 		}
@@ -126,6 +125,20 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
 	public void updateSelectedShape(UMLShape newSelectedShape)
 	{
+		// This will "de-select" the previously selected UMLShape,
+		// we might want to set a variable for the last selected (or "currentlySelectedUMLShape")
+		// and just deselect it here - might need to write some logic code in case we want 
+		// two boxes to be highlighted for some reason or another later on? 
+		// Either case, this will deselect everything before updating it to the 'newSelectedShape'
+		for (int current = 0; current < this.getComponentCount(); current++) 
+		{
+			if(this.getComponent(current) instanceof UMLShape)
+			{
+				((UMLShape)this.getComponent(current)).setSelected(false);
+			}
+		}
+		
+		
 		if (umlToolBar.getBtnShape_Class().isSelected())
 		{
 			if(newSelectedShape == null)
@@ -173,6 +186,12 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
 			System.out.println("firstSelectedShape = " + firstSelectedShape);
 
+		}
+		else
+		{
+			// Even if there isn't a UML toolbar button selected, set the shape we just clicked on selected state
+			// to true
+			newSelectedShape.setSelected(true);
 		}
 
 		
@@ -234,6 +253,10 @@ public class UMLCanvas extends JPanel implements MouseListener {
 			// first shape is occupied, check to see if second shape and occupy it
 
 		}
+		
+		
+		// Repaint
+		this.repaint();
 	}
 
 	@Override
@@ -254,11 +277,8 @@ public class UMLCanvas extends JPanel implements MouseListener {
 					
 					UMLShape_Class newShape = new UMLShape_Class(e.getX(), e.getY(), false);
 					
-					this.add(newShape);
-					
-					this.setComponentZOrder(newShape, Z_TOP_CHILD);
-					
-	
+					this.add(newShape);					
+					this.setComponentZOrder(newShape, Z_TOP_CHILD);	
 					this.repaint();										
 				}
 			}
@@ -294,6 +314,29 @@ public class UMLCanvas extends JPanel implements MouseListener {
 					// No longer an editing object
 					umlShapeBeingEdited = null;
 				}
+				else
+				{
+				
+					// For now loop through all the children of UMLShape and set it's selected state to false 
+					// if the user clicked on the canvas and there's no buttons selected or something being edited
+					for (int current = 0; current < this.getComponentCount(); current++) 
+					{
+						if(this.getComponent(current) instanceof UMLShape)
+						{
+							((UMLShape)this.getComponent(current)).setSelected(false);
+						}
+						
+						// Also set both first and second selected uml diagrams to false (Change? do we like this?)
+						firstSelectedShape = null;
+						secondSelectedShape = null;
+
+					}
+					
+					// Repaint
+					this.repaint();
+		
+				}
+				
 
 			}
 
@@ -307,7 +350,6 @@ public class UMLCanvas extends JPanel implements MouseListener {
 				// Stop editing any shape if one is being edited
 				if (umlShapeBeingEdited != null) {
 					umlShapeBeingEdited.setEditing(false);
-					;
 					umlShapeBeingEdited = null;
 				}
 			}

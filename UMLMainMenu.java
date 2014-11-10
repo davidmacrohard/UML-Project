@@ -18,7 +18,8 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 	private JMenuItem fileMenu_SaveAs 		= null;
 	private JMenuItem fileMenu_Exit 		= null;
 	
-	UMLMainWindow mainWindow 				= null;
+	private UMLMainWindow mainWindow 		= null;
+	private UMLTabbedPanel umlTabbedPanel 	= null;
 	
 	UMLMainMenu(UMLMainWindow mainwindow)
 	{
@@ -97,6 +98,11 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 		menu.addActionListener(this);
 	}
 	
+	public void SetUMLTabbedPanel(UMLTabbedPanel TabbedPanel)
+	{
+		umlTabbedPanel = TabbedPanel;
+	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -104,6 +110,15 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 		{
 			// TODO Boolean check for flag if user changed anything and wants to save or not
 			System.exit(0);
+		}
+		else if(e.getSource() == fileMenu_New)
+		{
+			// Not sure if we want a new tab here or just to start a whole new project?
+			// Will add new tab here for now
+			if(umlTabbedPanel != null)
+			{
+				umlTabbedPanel.AddNewTab();
+			}
 		}
 		
 	}

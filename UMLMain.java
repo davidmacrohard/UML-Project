@@ -5,21 +5,33 @@ import javax.swing.JToolBar;
 
 public class UMLMain {
 
+	// Add getters and set to private
+	public static UMLMainWindow mainWindow = null;
+	public static UMLToolBar umlToolBar = null;
+	public static UMLMainMenu mainMenu = null;
+	public static UMLTabbedPanel umlTabbedPanel = null;
+	
 	public static void main(String[] args) {
 
-		UMLMainWindow mainWindow 	= new UMLMainWindow();	
-		UMLCanvas umlCanvas 		= new UMLCanvas();
-		UMLToolBar umlToolBar 		= new UMLToolBar("UML_Main_ToolBar", JToolBar.VERTICAL);
-		UMLMainMenu mainMenu 		= new UMLMainMenu(mainWindow);
+		mainWindow 		= new UMLMainWindow();	
+		umlToolBar 		= new UMLToolBar("UML_Main_ToolBar", JToolBar.VERTICAL);
+		mainMenu 		= new UMLMainMenu(mainWindow);
 		
 		
 		mainWindow.add(umlToolBar, BorderLayout.WEST);
 		mainWindow.setJMenuBar(mainMenu);
-		umlCanvas.setUMLToolBar(umlToolBar);
+				
+		umlTabbedPanel = new UMLTabbedPanel(umlToolBar);
+		// Default starting tab
+		umlTabbedPanel.AddNewTab();
+		mainWindow.add(umlTabbedPanel, BorderLayout.CENTER);
 		
+		mainMenu.SetUMLTabbedPanel(umlTabbedPanel);
+
 		
-		mainWindow.add(umlCanvas, BorderLayout.CENTER);
 		mainWindow.setVisible(true);
 	}
 
+	
+	
 }
