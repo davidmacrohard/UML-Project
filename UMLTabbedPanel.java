@@ -1,5 +1,8 @@
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -8,7 +11,7 @@ import javax.swing.JTabbedPane;
 
 
 @SuppressWarnings("serial")
-public class UMLTabbedPanel extends JTabbedPane {
+public class UMLTabbedPanel extends JTabbedPane implements ActionListener {
 	
 	UMLToolBar umlToolBar = null;
 	
@@ -25,7 +28,7 @@ public class UMLTabbedPanel extends JTabbedPane {
 	
 	public void AddNewTab()
 	{
-		String title = "[Untitled " + this.getTabCount() + " ]";
+		String title = "[Untitled " + (this.getTabCount() + 1) + " ]";
 
 		// JTabbedPane code
 		
@@ -37,6 +40,7 @@ public class UMLTabbedPanel extends JTabbedPane {
 
 		int index = this.indexOfTab(title);
 		JPanel tabPanel = new JPanel(new GridBagLayout());
+		tabPanel.setName(title);
 		tabPanel.setOpaque(false);
 		JLabel lblTitle = new JLabel("[Untitled]");
 		JButton btnClose = new JButton("x");
@@ -54,6 +58,23 @@ public class UMLTabbedPanel extends JTabbedPane {
 		
 		this.setTabComponentAt(index,  tabPanel);
 		
-		//btnClose.addActionListener(this);
+		btnClose.addActionListener(this);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Component parent = ((Component)e.getSource()).getParent();
+		
+		if(parent != null)
+		{
+			int index = this.indexOfTab(parent.getName());
+			
+			if(index >= 0)
+			{
+				this.removeTabAt(index);
+			}
+		}
+		
 	}
 }
