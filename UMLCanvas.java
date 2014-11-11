@@ -386,4 +386,13 @@ public class UMLCanvas extends JPanel implements MouseListener {
 		}
 	}
 
+	public void clearCanvas() {
+
+		for (Component c : this.getComponents()) {
+			remove(c);
+			
+		}
+		repaint();
+		revalidate();
+	}
 }

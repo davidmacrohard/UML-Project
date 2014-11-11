@@ -27,6 +27,7 @@ public class UMLMain {
 		mainWindow.add(umlTabbedPanel, BorderLayout.CENTER);
 		
 		mainMenu.SetUMLTabbedPanel(umlTabbedPanel);
+		mainWindow.setUMLTabbedPanel(umlTabbedPanel);
 
 		
 		mainWindow.setVisible(true);
