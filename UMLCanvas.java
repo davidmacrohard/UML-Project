@@ -37,6 +37,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
 		this.setBackground(Color.WHITE);
 		this.setLayout(null);
+		
 
 		// Tap into the keyboard focus manager to handle keyboard events
 		KeyboardFocusManager.getCurrentKeyboardFocusManager()
@@ -253,6 +254,16 @@ public class UMLCanvas extends JPanel implements MouseListener {
 			// first shape is occupied, check to see if second shape and occupy it
 
 		}
+		
+		
+		
+		
+		
+		int angle = 0;
+		UMLArrow arrow = new UMLArrow(secondSelectedShape, this, angle);
+		
+		this.add(arrow);
+		
 		
 		
 		// Repaint
