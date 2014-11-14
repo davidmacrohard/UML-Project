@@ -6,6 +6,10 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -30,6 +34,11 @@ public class UMLCanvas extends JPanel implements MouseListener {
     private UMLShape umlShapeBeingEdited = null; // Used to save the UML shape
     // that is being edited, if
     // any.
+    
+    public Hashtable<Integer, UMLShape_Class> shapesList = null;
+	public ArrayList<UMLLine> linesList = null;
+
+	private Random rand = null;
 
     UMLCanvas() {
         popupMenu = new UMLCanvas_PopupMenu(this);
@@ -60,8 +69,12 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
                         return discardEvent;
                     }
-
+                    
                 });
+        
+        rand = new Random();
+		shapesList = new Hashtable<Integer, UMLShape_Class>();
+		linesList = new ArrayList<UMLLine>();
 
     }
 
@@ -254,9 +267,8 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
             if (c.getClass() != this.getClass()) {
                 if (umlToolBar.getBtnShape_Class().isSelected()) {
-
-                    UMLShape_Class newShape = new UMLShape_Class(e.getX(), e.getY(), false);
-
+                	int id = rand.nextInt();
+                	UMLShape_Class newShape = new UMLShape_Class(e.getX(), e.getY(), id, false);                    shapesList.put(new Integer(id), newShape);
                     this.add(newShape);
                     this.setComponentZOrder(newShape, Z_TOP_CHILD);
                     this.repaint();
@@ -276,9 +288,11 @@ public class UMLCanvas extends JPanel implements MouseListener {
                 // One for now - add more later
                 // Check if the class toggle button is selected
                 if (umlToolBar.getBtnShape_Class().isSelected()) {
-
-                    this.add(new UMLShape_Class(e.getX(), e.getY(), false));
-                    this.repaint();
+                	int id = rand.nextInt();
+					UMLShape_Class newShape = new UMLShape_Class(e.getX(), e.getY(), id, false);
+					shapesList.put(new Integer(id), newShape);
+					this.add(newShape);
+					this.repaint();
 
                     // De-select the class shape? or leave toggled to create
                     // more class objects?
@@ -361,6 +375,24 @@ public class UMLCanvas extends JPanel implements MouseListener {
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
+    
+    public void saveCanvas(String fileName) {
+		UMLSave saver = new UMLSave(fileName, shapesList, linesList);
+	}
+	
+	public void loadCanvas(String fileName) {
+		System.out.println("Loading canvas");
+		UMLLoad loader = new UMLLoad(fileName, this);
+		shapesList = loader.getShapes();
+		linesList = loader.getLines();
+		
+		Collection<UMLShape_Class> shapesCol = shapesList.values();
+		for(UMLShape_Class newShape : shapesCol) {
+			this.add(newShape);					
+			this.setComponentZOrder(newShape, Z_TOP_CHILD);	
+		}
+	}
+    
 
     public void clearCanvas() {
 

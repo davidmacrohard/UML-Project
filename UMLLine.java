@@ -60,6 +60,14 @@ public class UMLLine extends JPanel{
 		
 	}
 	
+	public UMLShape getFirst() {
+		return firstSelectedShape;
+	}
+	
+	public UMLShape getSecond() {
+		return secondSelectedShape;
+	}
+	
 	@Override
 	public void paintComponent(Graphics g)
 	{			

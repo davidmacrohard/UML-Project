@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 
@@ -21,6 +22,8 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
 
     private UMLMainWindow mainWindow = null;
     private UMLTabbedPanel umlTabbedPanel = null;
+    
+    private String fileName = "";
 
     UMLMainMenu(UMLMainWindow mainwindow) {
         // Save the main window, easy to extract canvas object and what not?
@@ -118,7 +121,24 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
             if (umlTabbedPanel != null) {
                 umlTabbedPanel.AddNewTab();
             }
-        }
+        }else if(e.getSource() == fileMenu_Save) {
+			if(fileName.equals("")) {
+				fileName = JOptionPane.showInputDialog("Save as:");
+				UMLCanvas canvas = mainWindow.getCanvas();
+				canvas.saveCanvas(fileName);
+			}else {
+				UMLCanvas canvas = mainWindow.getCanvas();
+				canvas.saveCanvas(fileName);
+			}
+		}else if(e.getSource() == fileMenu_SaveAs) {
+			fileName = JOptionPane.showInputDialog("Save as:");
+			UMLCanvas canvas = mainWindow.getCanvas();
+			canvas.saveCanvas(fileName);
+		}else if(e.getSource() == fileMenu_OpenProject) {
+			fileName = JOptionPane.showInputDialog("Save as:");
+			UMLCanvas canvas = mainWindow.getCanvas();
+			canvas.loadCanvas(fileName);
+		}
 
     }
 }

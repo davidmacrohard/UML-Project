@@ -8,7 +8,7 @@ public class JUnit {
     @Test
     public void addOneRectangle() {
 
-        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
+        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, 0, false);
         Canvas.add(newClassBox);
         int numOfRectangles = 0;
         for (int i = 0; i < Canvas.getComponentCount(); i++) {
@@ -23,7 +23,7 @@ public class JUnit {
     public void addManyRectangles() {
 
         for (int i = 1; i <= 25; i++) {
-            UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
+            UMLShape_Class newClassBox = new UMLShape_Class(4, 4, i, false);
             Canvas.add(newClassBox);
         }
         int numOfRectangles = 0;
@@ -38,8 +38,8 @@ public class JUnit {
     @Test
     public void addOneLine() {
 
-        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
-        UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, false);
+        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, 0, false);
+        UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, 0, false);
         Canvas.add(newClassBox);
         Canvas.add(newClassBox2);
 
@@ -57,8 +57,8 @@ public class JUnit {
     @Test
     public void addManyLines() {
 
-        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
-        UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, false);
+        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, 0, false);
+        UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, 0, false);
         Canvas.add(newClassBox);
         Canvas.add(newClassBox2);
 
@@ -78,7 +78,7 @@ public class JUnit {
     @Test
     public void clearCanvasWithOneClass() {
 
-        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
+        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, 0, false);
         Canvas.add(newClassBox);
         assertEquals(1, Canvas.getComponentCount());
         Canvas.clearCanvas();
@@ -88,8 +88,8 @@ public class JUnit {
 
     public void clearCanvasWithOneLine() {
 
-        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
-        UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, false);
+        UMLShape_Class newClassBox = new UMLShape_Class(4, 4, 0, false);
+        UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, 0, false);
         Canvas.add(newClassBox);
         Canvas.add(newClassBox2);
         UMLLine newLine = new UMLLine(newClassBox, newClassBox2, Canvas);
@@ -112,8 +112,8 @@ public class JUnit {
 
     public void clearCanvasWithManyObjects() {
         for (int i = 0; i <= 25; i++) {
-            UMLShape_Class newClassBox = new UMLShape_Class(4, 4, false);
-            UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, false);
+            UMLShape_Class newClassBox = new UMLShape_Class(4, 4, i, false);
+            UMLShape_Class newClassBox2 = new UMLShape_Class(4, 4, i, false);
             Canvas.add(newClassBox);
             Canvas.add(newClassBox2);
             UMLLine newLine = new UMLLine(newClassBox, newClassBox2, Canvas);
