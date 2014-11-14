@@ -1,4 +1,5 @@
 ///*
+import java.awt.BasicStroke;
 import java.awt.Color; 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -46,7 +47,6 @@ public class UMLLine extends JPanel{
 		secondX = secondSelectedShapeX;
 		secondY = secondSelectedShapeY;
 		/
-
 		System.out.println("First X:" + firstX);
 		System.out.println("First Y:" + firstY);
 		System.out.println("Second X:" + secondX);
@@ -107,7 +107,7 @@ public class UMLLine extends JPanel{
 		{
 			float rightSquareSide =  (float) (Math.tan(Math.toRadians(angle % 90) % (Math.PI / 2)));
 
-			base = (float) -(50 / (rightSquareSide * .765));
+			base = (float) -(50 / (rightSquareSide * .885));
 
 
 
@@ -122,7 +122,7 @@ public class UMLLine extends JPanel{
 		{
 			float leftSquareSide = (float) (1 / Math.tan(Math.toRadians(angle % 90)));
 
-			base = (float) (50 / (leftSquareSide * .765));
+			base = (float) (50 / (leftSquareSide * .935));
 
 			//System.out.println("Tan % 90: " + leftSquareSide);
 			//System.out.println("Base: " + base);
@@ -137,6 +137,8 @@ public class UMLLine extends JPanel{
 
 		//System.out.println("Tan: " + Math.tan(Math.toRadians(angle % 90)) );
 
+		((Graphics2D) g).setStroke(new BasicStroke(3));
+		
 		g.drawLine((firstSelectedShape.getX() + (firstSelectedShape.getWidth() / 2)),
 				(firstSelectedShape.getY() + (firstSelectedShape.getHeight() / 2)),
 				(secondSelectedShape.getX() + (secondSelectedShape.getWidth() / 2)), 
@@ -146,7 +148,7 @@ public class UMLLine extends JPanel{
 
 		// draws the arrow and finds the angle to rotate it
 		try {
-			image = ImageIO.read(new File("Arrowhead3.png"));
+			image = ImageIO.read(new File("arrow6.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -155,52 +157,68 @@ public class UMLLine extends JPanel{
 		tx.rotate(((-1) * getAngle()), image.getWidth(null)/2, image.getHeight(null)/2);
 
 		
-		/*
-		if (90 <= angle && angle < 135)
-		{
-			g2d.translate(secondSelectedShape.getX() + (secondSelectedShape.getHeight()/2 + 50),
-					(secondSelectedShape.getY() - (base - 34.5 )));
-		}
-		*/
-		
-		
 		
 		if (270 < angle && angle < 315)
 		{
-			g2d.translate(secondSelectedShape.getX() - 35,
-					((secondSelectedShape.getY() + 100) + (base - 66)));
+			g2d.translate(secondSelectedShape.getX() - 23,
+					((secondSelectedShape.getY() + 100) + (base - 81)));
 		}
 		
 		else if (225 < angle && angle <= 270)
 		{
-			g2d.translate(secondSelectedShape.getX() - 35,
-					((secondSelectedShape.getY() + 100) + (base - 68)));
+			g2d.translate(secondSelectedShape.getX() - 23,
+					((secondSelectedShape.getY() + 100) + (base - 83)));
 		}
 		
 		else if (45 < angle && angle < 135){
 
-			g2d.translate(secondSelectedShape.getX() + (secondSelectedShape.getHeight()),
-					(secondSelectedShape.getY() - (base - 34.5 )));
+			g2d.translate(secondSelectedShape.getX() + (secondSelectedShape.getHeight() - 12),
+					(secondSelectedShape.getY() - (base - 17 )));
 		}
 
 		else if (315 < angle || angle < 45)
 		{
 		
 			g2d.translate(secondSelectedShape.getX() + (base + 33),
-					(secondSelectedShape.getY() + (secondSelectedShape.getHeight() / 2))+50);
+					(secondSelectedShape.getY() + (secondSelectedShape.getHeight() / 2))+22);
 		}
 		
 		else if (180 <= angle && angle < 225)
 		{
 			g2d.translate((secondSelectedShape.getX() + 65) - (base + 33),
-					(secondSelectedShape.getY() - 35));	
+					(secondSelectedShape.getY() - 38));	
 		}
 		
 		else if (135 < angle && angle < 180)
 		{
-			g2d.translate((secondSelectedShape.getX() + 68) - (base + 33),
-					(secondSelectedShape.getY() - 35));	
+			g2d.translate((secondSelectedShape.getX() + 68) - (base + 36),
+					(secondSelectedShape.getY() - 38));	
 		}
+		else if (angle == 225)
+		{
+			g2d.translate((secondSelectedShape.getX() + 65) - (53 + 33),
+					(secondSelectedShape.getY() - 38));	
+		}
+		
+		else if (angle == 135)
+		{
+			g2d.translate(secondSelectedShape.getX() + (secondSelectedShape.getHeight() - 12),
+					(secondSelectedShape.getY() - (53 - 17 )));
+		}
+		
+		else if (angle == 45)
+		{
+			g2d.translate(secondSelectedShape.getX() + (53 + 33),
+					(secondSelectedShape.getY() + (secondSelectedShape.getHeight() / 2))+22);
+		}
+		
+		else if (angle == 315)
+		{
+			g2d.translate(secondSelectedShape.getX() - 23,
+					((secondSelectedShape.getY() + 100) + (53.5 - 81)));
+		}
+		
+		
 		g2d.drawImage(image, tx, null);
 		
 		System.out.println("Base: "+ base);
