@@ -99,7 +99,7 @@ public class UMLLine extends JPanel{
 		}
 
 		((Graphics2D) g).setStroke(new BasicStroke(3));
-		
+
 		g.drawLine((firstSelectedShape.getX() + (firstSelectedShape.getWidth() / 2)),
 				(firstSelectedShape.getY() + (firstSelectedShape.getHeight() / 2)),
 				(secondSelectedShape.getX() + (secondSelectedShape.getWidth() / 2)), 
@@ -117,20 +117,20 @@ public class UMLLine extends JPanel{
 
 		tx.rotate(((-1) * getAngle()), image.getWidth(null)/2, image.getHeight(null)/2);
 
-		
-		
+
+
 		if (270 < angle && angle < 315)
 		{
 			g2d.translate(secondSelectedShape.getX() - 23,
 					((secondSelectedShape.getY() + 100) + (base - 81)));
 		}
-		
+
 		else if (225 < angle && angle <= 270)
 		{
 			g2d.translate(secondSelectedShape.getX() - 23,
 					((secondSelectedShape.getY() + 100) + (base - 83)));
 		}
-		
+
 		else if (45 < angle && angle < 135){
 
 			g2d.translate(secondSelectedShape.getX() + (secondSelectedShape.getHeight() - 12),
@@ -139,17 +139,17 @@ public class UMLLine extends JPanel{
 
 		else if (315 < angle || angle < 45)
 		{
-		
+
 			g2d.translate(secondSelectedShape.getX() + (base + 33),
 					(secondSelectedShape.getY() + (secondSelectedShape.getHeight() / 2))+22);
 		}
-		
+
 		else if (180 <= angle && angle < 225)
 		{
 			g2d.translate((secondSelectedShape.getX() + 65) - (base + 33),
 					(secondSelectedShape.getY() - 38));	
 		}
-		
+
 		else if (135 < angle && angle < 180)
 		{
 			g2d.translate((secondSelectedShape.getX() + 68) - (base + 36),
@@ -160,32 +160,32 @@ public class UMLLine extends JPanel{
 			g2d.translate((secondSelectedShape.getX() + 65) - (53 + 33),
 					(secondSelectedShape.getY() - 38));	
 		}
-		
+
 		else if (angle == 135)
 		{
 			g2d.translate(secondSelectedShape.getX() + (secondSelectedShape.getHeight() - 12),
 					(secondSelectedShape.getY() - (53 - 17 )));
 		}
-		
+
 		else if (angle == 45)
 		{
 			g2d.translate(secondSelectedShape.getX() + (53 + 33),
 					(secondSelectedShape.getY() + (secondSelectedShape.getHeight() / 2))+22);
 		}
-		
+
 		else if (angle == 315)
 		{
 			g2d.translate(secondSelectedShape.getX() - 23,
 					((secondSelectedShape.getY() + 100) + (53.5 - 81)));
 		}
-		
-		
+
+
 		g2d.drawImage(image, tx, null);
-		
+
 		System.out.println("Base: "+ base);
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @return			angle in radians of the line between the two UMLShape_Classes
@@ -199,5 +199,14 @@ public class UMLLine extends JPanel{
 
 		return (float) Math.toRadians(angle);
 	}
+
+	public UMLShape getFirst() {
+		return firstSelectedShape;
+	}
+
+	public UMLShape getSecond() {
+		return secondSelectedShape;
+	}
+
 
 }
