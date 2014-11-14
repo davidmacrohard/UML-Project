@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 
@@ -17,9 +18,11 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 	private JMenuItem fileMenu_Save			= null;
 	private JMenuItem fileMenu_SaveAs 		= null;
 	private JMenuItem fileMenu_Exit 		= null;
-	
+	private JMenuItem fileMenu_ClearCanvas 	= null;
 	private UMLMainWindow mainWindow 		= null;
 	private UMLTabbedPanel umlTabbedPanel 	= null;
+	
+	private String fileName = "";
 	
 	UMLMainMenu(UMLMainWindow mainwindow)
 	{
@@ -84,6 +87,10 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 		
 			
 		// TODO Code for edit/view/help (if we want a help menu?)
+		fileMenu_ClearCanvas = new JMenuItem("Clear Canvas");
+		setupMenuItem(fileMenu_ClearCanvas, KeyEvent.VK_S, "Clear Canvas");
+		fileMenu_ClearCanvas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_6, ActionEvent.ALT_MASK));
+		menuEdit.add(fileMenu_ClearCanvas);
 		
 		
 		
@@ -103,14 +110,22 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 		umlTabbedPanel = TabbedPanel;
 	}
 	
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == fileMenu_Exit)
 		{
 			// TODO Boolean check for flag if user changed anything and wants to save or not
 			System.exit(0);
+			
 		}
+		
+		else if(e.getSource() == fileMenu_ClearCanvas)
+		{
+			UMLCanvas canvas = mainWindow.getCanvas();
+			
+			canvas.clearCanvas();
+		}
+		
 		else if(e.getSource() == fileMenu_New)
 		{
 			// Not sure if we want a new tab here or just to start a whole new project?
@@ -119,6 +134,23 @@ public class UMLMainMenu extends JMenuBar implements ActionListener{
 			{
 				umlTabbedPanel.AddNewTab();
 			}
+		}else if(e.getSource() == fileMenu_Save) {
+			if(fileName.equals("")) {
+				fileName = JOptionPane.showInputDialog("Save as:");
+				UMLCanvas canvas = mainWindow.getCanvas();
+				canvas.saveCanvas(fileName);
+			}else {
+				UMLCanvas canvas = mainWindow.getCanvas();
+				canvas.saveCanvas(fileName);
+			}
+		}else if(e.getSource() == fileMenu_SaveAs) {
+			fileName = JOptionPane.showInputDialog("Save as:");
+			UMLCanvas canvas = mainWindow.getCanvas();
+			canvas.saveCanvas(fileName);
+		}else if(e.getSource() == fileMenu_OpenProject) {
+			fileName = JOptionPane.showInputDialog("Save as:");
+			UMLCanvas canvas = mainWindow.getCanvas();
+			canvas.loadCanvas(fileName);
 		}
 		
 	}

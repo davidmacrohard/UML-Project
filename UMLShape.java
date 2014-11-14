@@ -8,8 +8,9 @@ public abstract class UMLShape extends JPanel implements MouseListener, MouseMot
 	
 	protected boolean isSelected = false;
 	protected boolean bEditing = false;
+	private int id = 0;
 	
-	UMLShape(int x, int y, boolean selected)
+	UMLShape(int x, int y, int id, boolean selected)
 	{
 		this.setLocation(x, y);
 		this.setSize(100, 100);
@@ -17,8 +18,9 @@ public abstract class UMLShape extends JPanel implements MouseListener, MouseMot
 		this.setVisible(true);
 
 		isSelected = selected;
+		this.id = id;
 	}
-	
+
 	public void setSelected(boolean selected)
 	{
 		isSelected = selected;
@@ -39,5 +41,17 @@ public abstract class UMLShape extends JPanel implements MouseListener, MouseMot
 	{
 		return bEditing;
 	}
+	
+	public int getID() {
+		return id;
+	}
+	
+//	public int getX() {
+//		return x;
+//	}
+//	
+//	public int getY() {
+//		return y;
+//	}
 
 }

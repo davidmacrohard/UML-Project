@@ -19,9 +19,9 @@ public class UMLShape_Class extends UMLShape{
 	private boolean bEditingTextArea = false;
 	private UMLShape_Class_PopupMenu popupMenu = null; // Used for the popup menu
 	
-	UMLShape_Class(int x, int y, boolean selected)
+	UMLShape_Class(int x, int y, int id, boolean selected)
 	{
-		super(x, y, selected);	
+		super(x, y, id, selected);	
 		
 		// Setup the JTextArea
 		classText.setLocation(2, 1);
