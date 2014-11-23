@@ -11,8 +11,8 @@ import javax.swing.JPopupMenu;
 public class UMLCanvas_PopupMenu extends JPopupMenu implements ActionListener {
 		
 	private JMenuItem menu_NewShape = null;
-	private JMenuItem menu_NewSomething = null;
-	@SuppressWarnings("unused")
+	private JMenuItem menu_RenameTab = null;
+	
 	private UMLCanvas theParent = null;
 	
 	UMLCanvas_PopupMenu(UMLCanvas parent)
@@ -23,13 +23,16 @@ public class UMLCanvas_PopupMenu extends JPopupMenu implements ActionListener {
 		menu_NewShape = new JMenuItem("New UML Shape");
 		menu_NewShape.setMnemonic(KeyEvent.VK_P);
 		menu_NewShape.getAccessibleContext().setAccessibleDescription("New UML Shape");
+		menu_NewShape.addActionListener(this);
 		this.add(menu_NewShape);	
 	
+		this.addSeparator();
 		
-		menu_NewSomething = new JMenuItem("New ____");
-		menu_NewSomething.setMnemonic(KeyEvent.VK_N);
-		menu_NewSomething.getAccessibleContext().setAccessibleDescription("New _____");
-		this.add(menu_NewSomething);	
+		menu_RenameTab = new JMenuItem("Rename Tab");
+		menu_RenameTab.setMnemonic(KeyEvent.VK_R);
+		menu_RenameTab.getAccessibleContext().setAccessibleDescription("Rename Tab");
+		menu_RenameTab.addActionListener(this);
+		this.add(menu_RenameTab);	
 		
 
 	}
@@ -41,9 +44,10 @@ public class UMLCanvas_PopupMenu extends JPopupMenu implements ActionListener {
 			JOptionPane.showMessageDialog(null, "New UML shape code here");
 		}
 		
-		if(e.getSource() == menu_NewSomething)
+		if(e.getSource() == menu_RenameTab && theParent != null)
 		{
-			JOptionPane.showMessageDialog(null, "New Something code here.");
+			UMLTabbedPanel tabbedPanel = (UMLTabbedPanel)theParent.getParent();
+			tabbedPanel.RenameTab();
 		}
 		
 	}

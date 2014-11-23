@@ -2,6 +2,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
@@ -12,6 +14,7 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 
 	private JToggleButton	btnShape_Class = null;
 	private JToggleButton	btnShape_Line = null;
+	private Vector<JToggleButton> ButtonList = new Vector<JToggleButton>(20);	
 
 	
 	
@@ -53,6 +56,13 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 		btnShape_Line.setFocusable(false);
 		
 		
+		// Add the buttons to the JToggleButton vector
+		ButtonList.addElement(btnShape_Line);
+		ButtonList.addElement(btnShape_Class);
+		
+		
+		
+		
 		// TODO Add rest of "getUMLShape_**** toggle buttons - or just add an array list and
 		// iterate over it checking the state of the current indexed togglebutton
 				
@@ -76,8 +86,21 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+	public void actionPerformed(ActionEvent e) {
+
+
+		Enumeration<JToggleButton> buttons = ButtonList.elements();
+		
+		while(buttons.hasMoreElements())
+		{
+			JToggleButton theButton = buttons.nextElement();
+			
+			if(theButton != e.getSource())
+			{
+				theButton.setSelected(false);
+			}
+			
+		}
 		
 	}
 	
