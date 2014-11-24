@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class UMLLine extends JPanel{
 	int secondX;
 	int secondY;
 
-	Image image;
+	BufferedImage image = null;
 
 
 	UMLCanvas mycanvas;
@@ -108,7 +109,7 @@ public class UMLLine extends JPanel{
 
 		// draws the arrow and finds the angle to rotate it
 		try {
-			image = ImageIO.read(new File("arrow6.png"));
+			image = ImageIO.read(this.getClass().getResource("images/arrow6.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
