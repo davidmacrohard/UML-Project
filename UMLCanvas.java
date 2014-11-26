@@ -67,7 +67,6 @@ public class UMLCanvas extends JPanel implements MouseListener {
         rand = new Random();
         shapesList = new Hashtable<Integer, UMLShape_Class>();
         linesList = new ArrayList<UMLLine>();
-        linesList = new ArrayList<UMLLine>();
 
     }
 
