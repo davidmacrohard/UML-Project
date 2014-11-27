@@ -21,14 +21,14 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public class UMLSave {
 
-	private String filePath = "";
+	private static String filePath = "";
 
-	private Hashtable<Integer, UMLShape_Class> shapesList = null;
-	private ArrayList<UMLLine> linesList = null;
+	private static Hashtable<Integer, UMLShape_Class> shapesList = null;
+	private static ArrayList<UMLLine> linesList = null;
 
-	private Document dom;
-
-	public UMLSave(String path, Hashtable<Integer, UMLShape_Class> s, ArrayList<UMLLine> l){
+	private static Document dom;
+	
+	public static void save(String path, Hashtable<Integer, UMLShape_Class> s, ArrayList<UMLLine> l) {
 		filePath = path;
 		shapesList = s;
 		linesList = l;
@@ -37,7 +37,7 @@ public class UMLSave {
 		printToFile();
 	}
 
-	private void createDocument() {
+	private static void createDocument() {
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -51,7 +51,7 @@ public class UMLSave {
 
 	}
 	
-	private void createDOMTree(){
+	private static void createDOMTree(){
 
 		Element rootEle = dom.createElement("Objects");
 		dom.appendChild(rootEle);
@@ -65,7 +65,7 @@ public class UMLSave {
 		Collection<UMLShape_Class> shapesCol = shapesList.values();
 		Iterator<UMLShape_Class> shapeIter  = shapesCol.iterator();
 		while(shapeIter.hasNext()) {
-			UMLShape s = shapeIter.next();
+			UMLShape_Class s = shapeIter.next();
 			Element shapeEle = createShapeElement(s);
 			shapesEle.appendChild(shapeEle);
 		}
@@ -79,7 +79,7 @@ public class UMLSave {
 
 	}
 	
-	private Element createShapeElement(UMLShape shape) {
+	private static Element createShapeElement(UMLShape_Class shape) {
 		Element shapeEle = dom.createElement("Shape");
 		shapeEle.setAttribute("type", "Class");
 
@@ -99,14 +99,14 @@ public class UMLSave {
 		shapeEle.appendChild(yEle);
 		
 		Element textEle = dom.createElement("text");
-		Text textText = dom.createTextNode("default text for now");
+		Text textText = dom.createTextNode(shape.getText());
 		textEle.appendChild(textText);
 		shapeEle.appendChild(textEle);
 
 		return shapeEle;
 	}
 	
-	private Element createLineElement(UMLLine line) {
+	private static Element createLineElement(UMLLine line) {
 		Element lineEle = dom.createElement("Line");
 		lineEle.setAttribute("type", "Arrow");
 		
@@ -123,7 +123,7 @@ public class UMLSave {
 		return lineEle;
 	}
 	
-	private void printToFile(){
+	private static void printToFile(){
 
 		try
 		{

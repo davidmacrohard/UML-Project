@@ -137,6 +137,7 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
 				fileName = JOptionPane.showInputDialog("Save as:");
 				UMLCanvas canvas = mainWindow.getCanvas();
 				canvas.saveCanvas(fileName);
+				umlTabbedPanel.RenameTab(fileName);
 			}else {
 				UMLCanvas canvas = mainWindow.getCanvas();
 				canvas.saveCanvas(fileName);
@@ -145,10 +146,12 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
 			fileName = JOptionPane.showInputDialog("Save as:");
 			UMLCanvas canvas = mainWindow.getCanvas();
 			canvas.saveCanvas(fileName);
+			umlTabbedPanel.RenameTab(fileName);
 		}else if(e.getSource() == fileMenu_OpenProject) {
-			fileName = JOptionPane.showInputDialog("Save as:");
+			fileName = JOptionPane.showInputDialog("Open file:");
 			UMLCanvas canvas = mainWindow.getCanvas();
 			canvas.loadCanvas(fileName);
+			umlTabbedPanel.RenameTab(fileName);
 		}else if(e.getSource() == fileMenu_RenameTab)
 		{
 			
