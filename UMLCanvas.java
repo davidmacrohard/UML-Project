@@ -138,12 +138,8 @@ public class UMLCanvas extends JPanel implements MouseListener {
         // and just deselect it here - might need to write some logic code in case we want
         // two boxes to be highlighted for some reason or another later on?
         // Either case, this will deselect everything before updating it to the 'newSelectedShape'
-<<<<<<< HEAD
 
         if (umlToolBar.getBtnShape_Delete().isSelected()) {
-=======
-        if (umlToolBar.getBtnShape_Class().isSelected()) {
->>>>>>> origin/master
 
             Iterator itLines = linesList.iterator();
 
@@ -423,11 +419,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
     }
 
     public void saveCanvas(String fileName) {
-<<<<<<< HEAD
         UMLSave.save(fileName, shapesList, linesList,commentsList);
-=======
-        UMLSave.save(fileName, shapesList, linesList);
->>>>>>> origin/master
     }
 
     public void loadCanvas(String fileName) {
@@ -445,14 +437,11 @@ public class UMLCanvas extends JPanel implements MouseListener {
         for (UMLLine line : linesList) {
             this.add(line);
         }
-<<<<<<< HEAD
         Collection<UMLShape_CommentBox> commentCol = commentsList.values();
         for (UMLShape_CommentBox newComBox : commentCol) {
             this.add(newComBox);
             this.setComponentZOrder(newComBox, Z_TOP_CHILD);
         }
-=======
->>>>>>> origin/master
         
         repaint();
     }

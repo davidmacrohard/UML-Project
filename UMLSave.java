@@ -24,19 +24,12 @@ public class UMLSave {
 	private static String filePath = "";
 
 	private static Hashtable<Integer, UMLShape_Class> shapesList = null;
-<<<<<<< HEAD
 	private static Hashtable<Integer, UMLShape_CommentBox> commentList = null;
-=======
->>>>>>> origin/master
 	private static ArrayList<UMLLine> linesList = null;
 
 	private static Document dom;
 	
-<<<<<<< HEAD
 	public static void save(String path, Hashtable<Integer, UMLShape_Class> s, ArrayList<UMLLine> l,Hashtable<Integer, UMLShape_CommentBox> c) {
-=======
-	public static void save(String path, Hashtable<Integer, UMLShape_Class> s, ArrayList<UMLLine> l) {
->>>>>>> origin/master
 		filePath = path;
 		shapesList = s;
 		linesList = l;

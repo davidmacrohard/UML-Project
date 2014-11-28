@@ -33,6 +33,10 @@ public class UMLShape_Class extends UMLShape{
 		
 		classText.addMouseListener(this);
 		classText.addMouseMotionListener(this);
+
+		//Make sure we can move it even if its not the text box being clicked
+		addMouseListener(this);
+		addMouseMotionListener(this);
 		
 		// Create the popup menu for the class object
 		popupMenu = new UMLShape_Class_PopupMenu(this);
@@ -238,7 +242,7 @@ public class UMLShape_Class extends UMLShape{
 	public String getText() {
 		return classText.getText();
 	}
-	
+
 	public void setText(String text) {
 		classText.setText(text);
 	}
