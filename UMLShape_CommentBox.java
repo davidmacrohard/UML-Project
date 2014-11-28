@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class UMLShape_CommentBox extends UMLShape{
+public class UMLShape_CommentBox extends UMLShape {
 
     // The text area for this Comment Box
     private JTextArea commentText = new JTextArea("Comment text here!!");
@@ -12,22 +12,21 @@ public class UMLShape_CommentBox extends UMLShape{
     private boolean bEditingTextArea = false;
     private UMLShape_Class_PopupMenu popupMenu = null; // Used for the popup menu
 
-    UMLShape_CommentBox(int x, int y, int id, boolean selected)
-    {
+    UMLShape_CommentBox(int x, int y, int id, boolean selected) {
         super(x, y, id, selected);
-        this.setSize(100,50);
-        
+        this.setSize(100, 50);
+
         // Setup the JTextArea
-         commentText.setLocation(1, 1);
-         commentText.setSize(100, 20);
-         commentText.setOpaque(false);
-         commentText.setEditable(false);
-         commentText.setBackground(Color.white);
-         commentText.setFocusable(false);
-         commentText.setLineWrap(true);
-         commentText.addMouseListener(this);
-         commentText.addMouseMotionListener(this);
-         commentText.setWrapStyleWord(true);
+        commentText.setLocation(1, 1);
+        commentText.setSize(100, 20);
+        commentText.setOpaque(false);
+        commentText.setEditable(false);
+        commentText.setBackground(Color.white);
+        commentText.setFocusable(false);
+        commentText.setLineWrap(true);
+        commentText.addMouseListener(this);
+        commentText.addMouseMotionListener(this);
+        commentText.setWrapStyleWord(true);
 
         //Make sure we can move it even if its not the text box being clicked
         addMouseListener(this);
@@ -36,9 +35,8 @@ public class UMLShape_CommentBox extends UMLShape{
         // Create the popup menu for the class object
         popupMenu = new UMLShape_Class_PopupMenu(this);
 
-        this.add( commentText);
+        this.add(commentText);
     }
-
 
 
     @Override
@@ -46,23 +44,20 @@ public class UMLShape_CommentBox extends UMLShape{
 
         // Only if the left mouse button was clicked, do we update the "focus" window
         // Can change to right mouse also? or middle and popup a menu popup? decision we have to make
-        if(e.getButton() == MouseEvent.BUTTON1)
-        {
+        if (e.getButton() == MouseEvent.BUTTON1) {
             mousePosition = e.getLocationOnScreen();
             // The user clicked on the JTextArea
-            if(e.getSource() instanceof JTextArea)
-            {
+            if (e.getSource() instanceof JTextArea) {
                 // Get the parent of the JTextArea (us)
-                UMLShape s = (UMLShape)e.getComponent().getParent();
+                UMLShape s = (UMLShape) e.getComponent().getParent();
                 // Get the canvas object
-                UMLCanvas canvas = (UMLCanvas)s.getParent();
+                UMLCanvas canvas = (UMLCanvas) s.getParent();
                 // Update the selected shape in the canvas
                 canvas.updateSelectedShape(s);
 
 
                 // If the user double clicked us, go into edit mode
-                if(e.getClickCount() == 2 && !e.isConsumed())
-                {
+                if (e.getClickCount() == 2 && !e.isConsumed()) {
                     // Set the canvas object to be this
                     canvas.setUMLShapeBeingEdited(this);
 
@@ -80,31 +75,26 @@ public class UMLShape_CommentBox extends UMLShape{
     }
 
 
-    public void setEditing(boolean isEditing)
-    {
-        if(isEditing)
-        {
-             commentText.setFocusable(true);
-             commentText.setEditable(true);
-             commentText.setBackground(Color.lightGray);
-             commentText.setOpaque(true);
+    public void setEditing(boolean isEditing) {
+        if (isEditing) {
+            commentText.setFocusable(true);
+            commentText.setEditable(true);
+            commentText.setBackground(Color.lightGray);
+            commentText.setOpaque(true);
 
             bEditingTextArea = true;
-        }
-        else
-        {
-             commentText.setFocusable(false);
-             commentText.setEditable(false);
-             commentText.setBackground(Color.WHITE);
-             commentText.setOpaque(false);
+        } else {
+            commentText.setFocusable(false);
+            commentText.setEditable(false);
+            commentText.setBackground(Color.WHITE);
+            commentText.setOpaque(false);
 
             bEditingTextArea = false;
         }
 
     }
 
-    public boolean isEditing()
-    {
+    public boolean isEditing() {
         return bEditingTextArea;
     }
 
@@ -122,8 +112,7 @@ public class UMLShape_CommentBox extends UMLShape{
 
     @Override
     public void mousePressed(MouseEvent arg0) {
-        if(arg0.getButton() == MouseEvent.BUTTON1)
-        {
+        if (arg0.getButton() == MouseEvent.BUTTON1) {
             leftMousePressed = true;
         }
 
@@ -132,8 +121,7 @@ public class UMLShape_CommentBox extends UMLShape{
 
     @Override
     public void mouseReleased(MouseEvent arg0) {
-        if(arg0.getButton() == MouseEvent.BUTTON1)
-        {
+        if (arg0.getButton() == MouseEvent.BUTTON1) {
             leftMousePressed = false;
         }
 
@@ -144,8 +132,7 @@ public class UMLShape_CommentBox extends UMLShape{
     public void mouseDragged(MouseEvent arg0) {
 
         // Only move with left mouse click
-        if(leftMousePressed)
-        {
+        if (leftMousePressed) {
 
             // Update this objects location based on the mouse position
             setUMLShape_Location(arg0.getX(), arg0.getY());
@@ -153,17 +140,14 @@ public class UMLShape_CommentBox extends UMLShape{
     }
 
 
-    private void showPopup(MouseEvent e)
-    {
-        if(e.isPopupTrigger())
-        {
+    private void showPopup(MouseEvent e) {
+        if (e.isPopupTrigger()) {
             popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }
     }
 
 
-    public void setUMLShape_Location(double x, double y)
-    {
+    public void setUMLShape_Location(double x, double y) {
         // Get the current x,y location for this UMLShape class object
         double curX = this.getLocation().getX();
         double curY = this.getLocation().getY();
@@ -177,8 +161,8 @@ public class UMLShape_CommentBox extends UMLShape{
         // up and to the left based on the mouse position, this helps
         // ensure that we have a fluid motion of dragging as the cursor will always
         // stay within the bounds of the JTextArea.
-        this.setLocation((int)(curX + x - mousePosition.x),
-                (int)(curY + y - mousePosition.y));
+        this.setLocation((int) (curX + x - mousePosition.x),
+                (int) (curY + y - mousePosition.y));
 
         this.getParent().repaint();
     }
@@ -194,11 +178,10 @@ public class UMLShape_CommentBox extends UMLShape{
     }
 
 
-    public void paintComponent(Graphics g)
-    {
+    public void paintComponent(Graphics g) {
 
 		/*
-		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Font font = new Font("Serif", Font.PLAIN,12);
 		g2D.setFont(font);
 		g2D.drawString("Hello", 4+1,  12);
@@ -208,39 +191,33 @@ public class UMLShape_CommentBox extends UMLShape{
         // Background and border
         g.setColor(Color.YELLOW);
         g.fillRect(2, 2, getWidth() - 2, getHeight() - 2);
-        Graphics2D g2D = (Graphics2D)g;
+        Graphics2D g2D = (Graphics2D) g;
         g2D.setStroke(new BasicStroke(2F));
         // If this is selected, draw an outline indicating it is
-        if(isSelected)
-        {
+        if (isSelected) {
             // Draw a highlighted border
             g2D.setColor(Color.YELLOW);
             g2D.drawRect(0, 0, getWidth(), getHeight());
 
-        }
-        else
-        {
+        } else {
             // Draw normal
             g2D.setColor(Color.WHITE);
             g2D.drawRect(0, 0, getWidth(), getHeight());
 
         }
 
-        if(commentText.getHeight() > this.getHeight())
-        {
+        if (commentText.getHeight() > this.getHeight()) {
 
-               this.setSize(commentText.getSize());
+            this.setSize(commentText.getSize());
         }
     }
 
-    public String getText()
-    {
-        return  commentText.getText();
+    public String getText() {
+        return commentText.getText();
     }
 
-    public void setText(String text)
-    {
-         commentText.setText(text);
+    public void setText(String text) {
+        commentText.setText(text);
     }
 
 

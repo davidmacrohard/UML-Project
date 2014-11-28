@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -19,11 +20,14 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
     private JMenuItem fileMenu_SaveAs = null;
     private JMenuItem fileMenu_Exit = null;
     private JMenuItem fileMenu_ClearCanvas = null;
+    private JMenuItem fileMenu_Copy = null;
     private JMenuItem fileMenu_RenameTab = null;
+    private JMenuItem fileMenu_Paste = null;
+    private JMenuItem fileMenu_Cut = null;
 
     private UMLMainWindow mainWindow = null;
     private UMLTabbedPanel umlTabbedPanel = null;
-    
+
     private String fileName = "";
 
     UMLMainMenu(UMLMainWindow mainwindow) {
@@ -88,16 +92,32 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
         setupMenuItem(fileMenu_ClearCanvas, KeyEvent.VK_L, "Clear Canvas");
         fileMenu_ClearCanvas.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_6, ActionEvent.ALT_MASK));
         menuEdit.add(fileMenu_ClearCanvas);
-        
+
         menuEdit.addSeparator();
-        
+
         fileMenu_RenameTab = new JMenuItem("Rename Tab");
         setupMenuItem(fileMenu_RenameTab, KeyEvent.VK_R, "Rename Tab");
         fileMenu_RenameTab.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_7, ActionEvent.ALT_MASK));
         menuEdit.add(fileMenu_RenameTab);
-        
-        
-        
+
+        menuEdit.addSeparator();
+
+        fileMenu_Copy = new JMenuItem("Copy");
+        setupMenuItem(fileMenu_Copy, KeyEvent.VK_C, "Copy");
+        fileMenu_Copy.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
+        menuEdit.add(fileMenu_Copy);
+
+        fileMenu_Paste = new JMenuItem("Paste");
+        setupMenuItem(fileMenu_Paste, KeyEvent.VK_P, "Paste");
+        fileMenu_Paste.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK));
+        menuEdit.add(fileMenu_Paste);
+
+        fileMenu_Cut = new JMenuItem("Cut");
+        setupMenuItem(fileMenu_Cut, KeyEvent.VK_T, "Cut");
+        fileMenu_Cut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK));
+        menuEdit.add(fileMenu_Cut);
+
+
         // TODO Code for edit/view/help (if we want a help menu?)
 
 
@@ -132,34 +152,41 @@ public class UMLMainMenu extends JMenuBar implements ActionListener {
             if (umlTabbedPanel != null) {
                 umlTabbedPanel.AddNewTab();
             }
-        }else if(e.getSource() == fileMenu_Save) {
-			if(fileName.equals("")) {
-				fileName = JOptionPane.showInputDialog("Save as:");
-				UMLCanvas canvas = mainWindow.getCanvas();
-				canvas.saveCanvas(fileName);
-				umlTabbedPanel.RenameTab(fileName);
-			}else {
-				UMLCanvas canvas = mainWindow.getCanvas();
-				canvas.saveCanvas(fileName);
-			}
-		}else if(e.getSource() == fileMenu_SaveAs) {
-			fileName = JOptionPane.showInputDialog("Save as:");
-			UMLCanvas canvas = mainWindow.getCanvas();
-			canvas.saveCanvas(fileName);
-			umlTabbedPanel.RenameTab(fileName);
-		}else if(e.getSource() == fileMenu_OpenProject) {
-			fileName = JOptionPane.showInputDialog("Open file:");
-			UMLCanvas canvas = mainWindow.getCanvas();
-			canvas.loadCanvas(fileName);
-			umlTabbedPanel.RenameTab(fileName);
-		}else if(e.getSource() == fileMenu_RenameTab)
-		{
-			
-			if(umlTabbedPanel != null)
-			{
-				umlTabbedPanel.RenameTab();
-			}
-		}
+        } else if (e.getSource() == fileMenu_Save) {
+            if (fileName.equals("")) {
+                fileName = JOptionPane.showInputDialog("Save as:");
+                UMLCanvas canvas = mainWindow.getCanvas();
+                canvas.saveCanvas(fileName);
+                umlTabbedPanel.RenameTab(fileName);
+            } else {
+                UMLCanvas canvas = mainWindow.getCanvas();
+                canvas.saveCanvas(fileName);
+            }
+        } else if (e.getSource() == fileMenu_SaveAs) {
+            fileName = JOptionPane.showInputDialog("Save as:");
+            UMLCanvas canvas = mainWindow.getCanvas();
+            canvas.saveCanvas(fileName);
+            umlTabbedPanel.RenameTab(fileName);
+        } else if (e.getSource() == fileMenu_OpenProject) {
+            fileName = JOptionPane.showInputDialog("Open file:");
+            UMLCanvas canvas = mainWindow.getCanvas();
+            canvas.loadCanvas(fileName);
+            umlTabbedPanel.RenameTab(fileName);
+        } else if (e.getSource() == fileMenu_RenameTab) {
 
+            if (umlTabbedPanel != null) {
+                umlTabbedPanel.RenameTab();
+            }
+        } else if (e.getSource() == fileMenu_Copy) {
+            UMLCanvas canvas = mainWindow.getCanvas();
+            canvas.copy();
+
+        } else if (e.getSource() == fileMenu_Paste) {
+            UMLCanvas canvas = mainWindow.getCanvas();
+            canvas.paste();
+        } else if (e.getSource() == fileMenu_Cut) {
+            UMLCanvas canvas = mainWindow.getCanvas();
+            canvas.cut();
+        }
     }
 }

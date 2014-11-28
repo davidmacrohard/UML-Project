@@ -18,6 +18,8 @@ public class UMLCanvas extends JPanel implements MouseListener {
     //static final int Z_LINE_POS = 1000;
     private static UMLShape firstSelectedShape = null;
     private static UMLShape secondSelectedShape = null;
+    private static UMLShape copiedShape = null;
+    private static UMLShape testShape = null;
 
     private UMLToolBar umlToolBar = null; // Used to track state of the toggle
     // buttons (better way perhaps?)
@@ -27,9 +29,9 @@ public class UMLCanvas extends JPanel implements MouseListener {
     // that is being edited, if
     // any.
 
-    public Hashtable<Integer, UMLShape_Class> shapesList        = null;
+    public Hashtable<Integer, UMLShape_Class> shapesList = null;
     public Hashtable<Integer, UMLShape_CommentBox> commentsList = null;
-    public ArrayList<UMLLine> linesList                         = null;
+    public ArrayList<UMLLine> linesList = null;
 
     private Random rand = null;
 
@@ -67,8 +69,8 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
         rand = new Random();
 
-        shapesList   = new Hashtable<Integer, UMLShape_Class>();
-        linesList    = new ArrayList<UMLLine>();
+        shapesList = new Hashtable<Integer, UMLShape_Class>();
+        linesList = new ArrayList<UMLLine>();
         commentsList = new Hashtable<Integer, UMLShape_CommentBox>();
 
 
@@ -147,10 +149,16 @@ public class UMLCanvas extends JPanel implements MouseListener {
                 UMLLine line = (UMLLine) itLines.next();
                 if (line.getFirst() == newSelectedShape || line.getSecond() == newSelectedShape) {
                     remove(line);
+                    linesList.remove(line);
                 }
             }
 
             remove(newSelectedShape);
+            if (newSelectedShape instanceof UMLShape_Class) {
+                shapesList.remove(newSelectedShape);
+            } else if (newSelectedShape instanceof UMLShape_CommentBox) {
+                commentsList.remove(newSelectedShape);
+            }
             this.repaint();
             return;
 
@@ -200,6 +208,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
             System.out.println("before last selected update");
             // Set the new lastSelectedState
             firstSelectedShape = newSelectedShape;
+            testShape = newSelectedShape;
 
             // repaint
             this.repaint();
@@ -210,12 +219,13 @@ public class UMLCanvas extends JPanel implements MouseListener {
             // Even if there isn't a UML toolbar button selected, set the shape we just clicked on selected state
             // to true
             newSelectedShape.setSelected(true);
+            testShape = newSelectedShape;
         }
 
 
         if (umlToolBar.getBtnShape_Line().isSelected()) {
 
-            if (firstSelectedShape != null && secondSelectedShape == null && !(firstSelectedShape instanceof UMLShape_CommentBox)) {
+            if (firstSelectedShape != null && secondSelectedShape == null) {
                 //second shape is the same as the first
                 if (firstSelectedShape == newSelectedShape) {
                     System.out.println("firstSelectedShape == newSelectedShape");
@@ -229,21 +239,22 @@ public class UMLCanvas extends JPanel implements MouseListener {
                     this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
 
 
-                    if (firstSelectedShape != null && secondSelectedShape != null&& !(secondSelectedShape instanceof UMLShape_CommentBox)) {
+                    if (firstSelectedShape != null && secondSelectedShape != null) {
                         System.out.println("Reached Here");
 
                         System.out.println("Coordinates for firstSelectedShape: " + firstSelectedShape.getX() + " , " + firstSelectedShape.getY());
                         System.out.println("Coordinates for secondSelectedShape: " + secondSelectedShape.getX() + " , " + secondSelectedShape.getY());
 
-
-                        UMLLine newLine = new UMLLine(firstSelectedShape, secondSelectedShape, this);
-
-
-                        this.add(newLine);
-                        linesList.add(newLine);
+                        if (!(secondSelectedShape instanceof UMLShape_CommentBox) && !(firstSelectedShape instanceof UMLShape_CommentBox)) {
+                            UMLLine newLine = new UMLLine(firstSelectedShape, secondSelectedShape, this);
 
 
-                        System.out.println("Reached Here");
+                            this.add(newLine);
+                            linesList.add(newLine);
+
+
+                            System.out.println("Reached Here");
+                        }
                         this.repaint();
 
                     }
@@ -258,6 +269,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
             if (firstSelectedShape == null && secondSelectedShape == null) {
                 System.out.println("No Shapes Selected");
                 firstSelectedShape = newSelectedShape;
+                testShape = newSelectedShape;
                 System.out.println("First shape is selected");
                 this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
             }
@@ -292,6 +304,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
                     this.setComponentZOrder(newShape, Z_TOP_CHILD);
                     this.repaint();
                 }
+
                 if (umlToolBar.getBtnShape_CommentBox().isSelected()) {
                     int id = rand.nextInt();
                     UMLShape_CommentBox newComBox = new UMLShape_CommentBox(e.getX(), e.getY(), id, false);
@@ -307,7 +320,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
             // if so create a new object at the mouse position if the Component
             // 'c' is equal to the canvas object
 
-            if (c.getClass() == this.getClass()) {
+            if (c.getClass() == this.getClass() || c instanceof UMLLine) {
                 // TODO Do a loop and take the correct action based on the
                 // toggled button
                 // umlToolBar.getToggledButtons(); <-- add toggle buttons to an
@@ -332,12 +345,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
                     commentsList.put(new Integer(id), newComBox);
                     this.add(newComBox);
                     this.repaint();
-
-                    // De-select the class shape? or leave toggled to create
-                    // more class objects?
-                    // Design decision we need to decide on.
                 }
-
 
 
                 // If no umlToolBar items are selected, and the user just
@@ -419,17 +427,22 @@ public class UMLCanvas extends JPanel implements MouseListener {
     }
 
     public void saveCanvas(String fileName) {
-        UMLSave.save(fileName, shapesList, linesList,commentsList);
+        UMLSave.save(fileName, shapesList, linesList, commentsList);
     }
 
     public void loadCanvas(String fileName) {
-        this.clearCanvas();
         UMLLoad loader = new UMLLoad(fileName, this);
         shapesList = loader.getShapes();
         linesList = loader.getLines();
-
+        commentsList = loader.getCommentBoxes();
         Collection<UMLShape_Class> shapesCol = shapesList.values();
         for (UMLShape_Class newShape : shapesCol) {
+            this.add(newShape);
+            this.setComponentZOrder(newShape, Z_TOP_CHILD);
+        }
+
+        Collection<UMLShape_CommentBox> commentsCol = commentsList.values();
+        for (UMLShape_CommentBox newShape : commentsCol) {
             this.add(newShape);
             this.setComponentZOrder(newShape, Z_TOP_CHILD);
         }
@@ -437,12 +450,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
         for (UMLLine line : linesList) {
             this.add(line);
         }
-        Collection<UMLShape_CommentBox> commentCol = commentsList.values();
-        for (UMLShape_CommentBox newComBox : commentCol) {
-            this.add(newComBox);
-            this.setComponentZOrder(newComBox, Z_TOP_CHILD);
-        }
-        
+
         repaint();
     }
 
@@ -452,10 +460,61 @@ public class UMLCanvas extends JPanel implements MouseListener {
         for (Component c : this.getComponents()) {
 
             remove(c);
+            if (c instanceof UMLShape_CommentBox) {
+                commentsList.remove(c);
+            } else if (c instanceof UMLShape_Class) {
+                shapesList.remove(c);
+            } else if (c instanceof UMLLine) {
+                linesList.remove(c);
+            }
 
         }
         repaint();
         revalidate();
     }
 
+    public void copy() {
+        unselectToolBarItems();
+        copiedShape = testShape;
+    }
+
+    public void paste() {
+        unselectToolBarItems();
+        if (copiedShape instanceof UMLShape_Class) {
+            int id = rand.nextInt();
+            String text = ((UMLShape_Class) copiedShape).getText();
+            UMLShape_Class newShape = new UMLShape_Class(getMousePosition().x, getMousePosition().y, id, false);
+            newShape.setText(text);
+            add(newShape);
+            shapesList.put(newShape.getID(), newShape);
+        }
+        if (copiedShape instanceof UMLShape_CommentBox) {
+            int id = rand.nextInt();
+            String text = ((UMLShape_CommentBox) copiedShape).getText();
+            UMLShape_CommentBox newShape = new UMLShape_CommentBox(getMousePosition().x, getMousePosition().y, id, false);
+            newShape.setText(text);
+            add(newShape);
+            commentsList.put(newShape.getID(), newShape);
+        }
+        repaint();
+    }
+
+    public void cut() {
+        unselectToolBarItems();
+        copiedShape = testShape;
+        copiedShape.setSelected(false);
+        Iterator itLines = linesList.iterator();
+        UMLLine line = null;
+        while (itLines.hasNext()) {
+           line = (UMLLine) itLines.next();
+            if (line.getFirst() == copiedShape || line.getSecond() == copiedShape) {
+                linesList.remove(line);
+                remove(line);
+            }
+        }
+        this.remove(testShape);
+        shapesList.remove(testShape);
+        repaint();
+
+    }
 }

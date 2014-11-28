@@ -21,12 +21,14 @@ public class UMLLoad {
 
     private Hashtable<Integer, UMLShape_Class> shapesList = null;
     private ArrayList<UMLLine> linesList = null;
+    private Hashtable<Integer, UMLShape_CommentBox> commentBoxList = null;
 
     public UMLLoad(String file, UMLCanvas canvas) {
         filePath = file;
         myCanvas = canvas;
         shapesList = new Hashtable<Integer, UMLShape_Class>();
         linesList = new ArrayList<UMLLine>();
+        commentBoxList = new Hashtable<Integer, UMLShape_CommentBox>();
         parseXmlFile();
         parseDocument();
 
@@ -89,6 +91,21 @@ public class UMLLoad {
                 linesList.add(l);
             }
         }
+
+        NodeList commentBoxNodeList = docEle.getElementsByTagName("CommentBox");
+        if (commentBoxNodeList != null && commentBoxNodeList.getLength() > 0) {
+            for (int i = 0; i < commentBoxNodeList.getLength(); i++) {
+
+                //get the employee element
+                Element el = (Element) commentBoxNodeList.item(i);
+
+                //get the Employee object
+                UMLShape_CommentBox sc = getShapeCommentBox(el);
+
+                //add it to list
+                commentBoxList.put(sc.getID(), sc);
+            }
+        }
     }
 
     private UMLShape_Class getShapeClass(Element ele) {
@@ -106,6 +123,17 @@ public class UMLLoad {
         int firstID = getIntValue(ele, "first");
         int secondID = getIntValue(ele, "second");
         return new UMLLine(shapesList.get(firstID), shapesList.get(secondID), myCanvas);
+    }
+
+    private UMLShape_CommentBox getShapeCommentBox(Element ele) {
+        int id = getIntValue(ele, "id");
+        int x = getIntValue(ele, "x");
+        int y = getIntValue(ele, "y");
+        String text = getTextValue(ele, "text");
+        System.out.println(text);
+        UMLShape_CommentBox commentBox = new UMLShape_CommentBox(x, y, id, false);
+        commentBox.setText(text);
+        return commentBox;
     }
 
     private String getTextValue(Element ele, String tagName) {
@@ -130,6 +158,10 @@ public class UMLLoad {
 
     public ArrayList<UMLLine> getLines() {
         return linesList;
+    }
+
+    public Hashtable<Integer, UMLShape_CommentBox> getCommentBoxes() {
+        return commentBoxList;
     }
 
 }
