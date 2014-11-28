@@ -12,8 +12,10 @@ import javax.swing.JToolBar;
 @SuppressWarnings("serial")
 public class UMLToolBar extends JToolBar implements ActionListener{
 
-	private JToggleButton	btnShape_Class = null;
-	private JToggleButton	btnShape_Line = null;
+	private JToggleButton	btnShape_Class      = null;
+	private JToggleButton	btnShape_Line       = null;
+	private JToggleButton   btnShape_CommentBox = null;
+	private JToggleButton	btnShape_Delete     = null;
 	private Vector<JToggleButton> ButtonList = new Vector<JToggleButton>(20);	
 
 	
@@ -24,10 +26,16 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 		this.setLayout(new GridBagLayout());
 		
 		btnShape_Class	= new JToggleButton("Class");
-		btnShape_Class.addActionListener(this);;
+		btnShape_Class.addActionListener(this);
 		
 		btnShape_Line	= new JToggleButton("Line");
 		btnShape_Line.addActionListener(this);
+
+		btnShape_CommentBox	= new JToggleButton("Comment Box");
+		btnShape_CommentBox.addActionListener(this);
+
+		btnShape_Delete = new JToggleButton("Delete");
+		btnShape_Delete.addActionListener(this);
 
 		
 		// Create a grid bad constraints layout for this toolbar
@@ -46,20 +54,32 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 		
 		
 		gbc.gridy = 1;
-		gbc.weighty = 1;
+		gbc.weighty = 0;
 		
 		this.add(btnShape_Line, gbc);
+
+		gbc.gridy = 2;
+		gbc.weighty = 0;
+
+		this.add(btnShape_CommentBox, gbc);
+
+		gbc.gridy = 3;
+		gbc.weighty = 1;
+
+		this.add(btnShape_Delete, gbc);
 		
 		
 		// To get rid of the dotted lines when you select the button
 		btnShape_Class.setFocusable(false);
 		btnShape_Line.setFocusable(false);
-		
-		
+		btnShape_CommentBox.setFocusable(false);
+		btnShape_Delete.setFocusable(false);
+
 		// Add the buttons to the JToggleButton vector
 		ButtonList.addElement(btnShape_Line);
 		ButtonList.addElement(btnShape_Class);
-		
+		ButtonList.addElement(btnShape_CommentBox);
+		ButtonList.addElement(btnShape_Delete);
 		
 		
 		
@@ -83,6 +103,16 @@ public class UMLToolBar extends JToolBar implements ActionListener{
 	JToggleButton getBtnShape_Line()
 	{
 		return btnShape_Line;
+	}
+
+	JToggleButton getBtnShape_CommentBox()
+	{
+		return btnShape_CommentBox;
+	}
+
+	JToggleButton getBtnShape_Delete()
+	{
+		return btnShape_Delete;
 	}
 
 	@Override

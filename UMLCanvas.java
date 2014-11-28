@@ -27,8 +27,9 @@ public class UMLCanvas extends JPanel implements MouseListener {
     // that is being edited, if
     // any.
 
-    public Hashtable<Integer, UMLShape_Class> shapesList = null;
-    public ArrayList<UMLLine> linesList = null;
+    public Hashtable<Integer, UMLShape_Class> shapesList        = null;
+    public Hashtable<Integer, UMLShape_CommentBox> commentsList = null;
+    public ArrayList<UMLLine> linesList                         = null;
 
     private Random rand = null;
 
@@ -65,8 +66,11 @@ public class UMLCanvas extends JPanel implements MouseListener {
                 });
 
         rand = new Random();
-        shapesList = new Hashtable<Integer, UMLShape_Class>();
-        linesList = new ArrayList<UMLLine>();
+
+        shapesList   = new Hashtable<Integer, UMLShape_Class>();
+        linesList    = new ArrayList<UMLLine>();
+        commentsList = new Hashtable<Integer, UMLShape_CommentBox>();
+
 
     }
 
@@ -134,6 +138,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
         // and just deselect it here - might need to write some logic code in case we want
         // two boxes to be highlighted for some reason or another later on?
         // Either case, this will deselect everything before updating it to the 'newSelectedShape'
+
         if (umlToolBar.getBtnShape_Delete().isSelected()) {
 
             Iterator itLines = linesList.iterator();
@@ -210,7 +215,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
 
         if (umlToolBar.getBtnShape_Line().isSelected()) {
 
-            if (firstSelectedShape != null && secondSelectedShape == null) {
+            if (firstSelectedShape != null && secondSelectedShape == null && !(firstSelectedShape instanceof UMLShape_CommentBox)) {
                 //second shape is the same as the first
                 if (firstSelectedShape == newSelectedShape) {
                     System.out.println("firstSelectedShape == newSelectedShape");
@@ -224,7 +229,7 @@ public class UMLCanvas extends JPanel implements MouseListener {
                     this.setComponentZOrder(newSelectedShape, Z_TOP_CHILD);
 
 
-                    if (firstSelectedShape != null && secondSelectedShape != null) {
+                    if (firstSelectedShape != null && secondSelectedShape != null&& !(secondSelectedShape instanceof UMLShape_CommentBox)) {
                         System.out.println("Reached Here");
 
                         System.out.println("Coordinates for firstSelectedShape: " + firstSelectedShape.getX() + " , " + firstSelectedShape.getY());
@@ -287,6 +292,14 @@ public class UMLCanvas extends JPanel implements MouseListener {
                     this.setComponentZOrder(newShape, Z_TOP_CHILD);
                     this.repaint();
                 }
+                if (umlToolBar.getBtnShape_CommentBox().isSelected()) {
+                    int id = rand.nextInt();
+                    UMLShape_CommentBox newComBox = new UMLShape_CommentBox(e.getX(), e.getY(), id, false);
+                    commentsList.put(new Integer(id), newComBox);
+                    this.add(newComBox);
+                    this.setComponentZOrder(newComBox, Z_TOP_CHILD);
+                    this.repaint();
+                }
             }
 
             // If the left mouse click is inside the canvas object .. check if
@@ -307,6 +320,17 @@ public class UMLCanvas extends JPanel implements MouseListener {
                     UMLShape_Class newShape = new UMLShape_Class(e.getX(), e.getY(), id, false);
                     shapesList.put(new Integer(id), newShape);
                     this.add(newShape);
+                    this.repaint();
+
+                    // De-select the class shape? or leave toggled to create
+                    // more class objects?
+                    // Design decision we need to decide on.
+                }
+                if (umlToolBar.getBtnShape_CommentBox().isSelected()) {
+                    int id = rand.nextInt();
+                    UMLShape_CommentBox newComBox = new UMLShape_CommentBox(e.getX(), e.getY(), id, false);
+                    commentsList.put(new Integer(id), newComBox);
+                    this.add(newComBox);
                     this.repaint();
 
                     // De-select the class shape? or leave toggled to create
@@ -395,12 +419,11 @@ public class UMLCanvas extends JPanel implements MouseListener {
     }
 
     public void saveCanvas(String fileName) {
-        UMLSave saver = new UMLSave(fileName, shapesList, linesList);
+        UMLSave.save(fileName, shapesList, linesList,commentsList);
     }
 
     public void loadCanvas(String fileName) {
         this.clearCanvas();
-        System.out.println("Loading canvas");
         UMLLoad loader = new UMLLoad(fileName, this);
         shapesList = loader.getShapes();
         linesList = loader.getLines();
@@ -411,10 +434,16 @@ public class UMLCanvas extends JPanel implements MouseListener {
             this.setComponentZOrder(newShape, Z_TOP_CHILD);
         }
 
-        Collection<UMLLine> linesCol = linesList.subList(0,linesList.size());
         for (UMLLine line : linesList) {
             this.add(line);
         }
+        Collection<UMLShape_CommentBox> commentCol = commentsList.values();
+        for (UMLShape_CommentBox newComBox : commentCol) {
+            this.add(newComBox);
+            this.setComponentZOrder(newComBox, Z_TOP_CHILD);
+        }
+        
+        repaint();
     }
 
 

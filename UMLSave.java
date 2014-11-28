@@ -21,23 +21,25 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public class UMLSave {
 
-	private String filePath = "";
+	private static String filePath = "";
 
-	private Hashtable<Integer, UMLShape_Class> shapesList = null;
-	private ArrayList<UMLLine> linesList = null;
+	private static Hashtable<Integer, UMLShape_Class> shapesList = null;
+	private static Hashtable<Integer, UMLShape_CommentBox> commentList = null;
+	private static ArrayList<UMLLine> linesList = null;
 
-	private Document dom;
-
-	public UMLSave(String path, Hashtable<Integer, UMLShape_Class> s, ArrayList<UMLLine> l){
+	private static Document dom;
+	
+	public static void save(String path, Hashtable<Integer, UMLShape_Class> s, ArrayList<UMLLine> l,Hashtable<Integer, UMLShape_CommentBox> c) {
 		filePath = path;
 		shapesList = s;
 		linesList = l;
+		commentList = c;
 		createDocument();
 		createDOMTree();
 		printToFile();
 	}
 
-	private void createDocument() {
+	private static void createDocument() {
 
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		try {
@@ -51,7 +53,7 @@ public class UMLSave {
 
 	}
 	
-	private void createDOMTree(){
+	private static void createDOMTree(){
 
 		Element rootEle = dom.createElement("Objects");
 		dom.appendChild(rootEle);
@@ -62,10 +64,13 @@ public class UMLSave {
 		Element linesEle = dom.createElement("Lines");
 		rootEle.appendChild(linesEle);
 
+		Element commentsEle = dom.createElement("CommentBoxes");
+		rootEle.appendChild(commentsEle);
+
 		Collection<UMLShape_Class> shapesCol = shapesList.values();
 		Iterator<UMLShape_Class> shapeIter  = shapesCol.iterator();
 		while(shapeIter.hasNext()) {
-			UMLShape s = shapeIter.next();
+			UMLShape_Class s = shapeIter.next();
 			Element shapeEle = createShapeElement(s);
 			shapesEle.appendChild(shapeEle);
 		}
@@ -77,9 +82,16 @@ public class UMLSave {
 			linesEle.appendChild(lineEle);
 		}
 
+		Collection<UMLShape_CommentBox> comCol = commentList.values();
+		Iterator<UMLShape_CommentBox> comIter  = comCol.iterator();
+		while(comIter.hasNext()) {
+			UMLShape_CommentBox c = comIter.next();
+			Element comEle = createCommentElement(c);
+			linesEle.appendChild(comEle);
+		}
 	}
 	
-	private Element createShapeElement(UMLShape shape) {
+	private static Element createShapeElement(UMLShape_Class shape) {
 		Element shapeEle = dom.createElement("Shape");
 		shapeEle.setAttribute("type", "Class");
 
@@ -99,14 +111,14 @@ public class UMLSave {
 		shapeEle.appendChild(yEle);
 		
 		Element textEle = dom.createElement("text");
-		Text textText = dom.createTextNode("default text for now");
+		Text textText = dom.createTextNode(shape.getText());
 		textEle.appendChild(textText);
 		shapeEle.appendChild(textEle);
 
 		return shapeEle;
 	}
 	
-	private Element createLineElement(UMLLine line) {
+	private static Element createLineElement(UMLLine line) {
 		Element lineEle = dom.createElement("Line");
 		lineEle.setAttribute("type", "Arrow");
 		
@@ -122,8 +134,34 @@ public class UMLSave {
 		
 		return lineEle;
 	}
+	private static Element createCommentElement(UMLShape_CommentBox commentBox) {
+		Element comEle = dom.createElement("CommentBox");
+		comEle.setAttribute("type", "CommentBox");
+
+		Element idEle = dom.createElement("id");
+		Text idText = dom.createTextNode("" + commentBox.getID());
+		idEle.appendChild(idText);
+		comEle.appendChild(idEle);
+
+		Element xEle = dom.createElement("x");
+		Text xText = dom.createTextNode("" + commentBox.getX());
+		xEle.appendChild(xText);
+		comEle.appendChild(xEle);
+
+		Element yEle = dom.createElement("y");
+		Text yText = dom.createTextNode("" + commentBox.getY());
+		yEle.appendChild(yText);
+		comEle.appendChild(yEle);
+
+		Element textEle = dom.createElement("text");
+		Text textText = dom.createTextNode(commentBox.getText());
+		textEle.appendChild(textText);
+		comEle.appendChild(textEle);
+
+		return comEle;
+	}
 	
-	private void printToFile(){
+	private static void printToFile(){
 
 		try
 		{
