@@ -43,8 +43,23 @@ public class UMLLine extends JPanel {
 	 *            canvas for the line to be drawn on
 	 */
 	public UMLLine(UMLShape firstSelectedShape, UMLShape secondSelectedShape,
-			UMLCanvas mycanvas) {
+					UMLCanvas mycanvas) {
 		linetype = chooseLineTip();
+		arrowhead = convertLineTip(linetype);
+
+		this.setOpaque(false);
+		this.firstSelectedShape = firstSelectedShape;
+		this.secondSelectedShape = secondSelectedShape;
+		this.mycanvas = mycanvas;
+		this.setVisible(true);
+		int sizeX = mycanvas.getWidth();
+		int sizeY = mycanvas.getHeight();
+		this.setSize(sizeX, sizeY);
+	}
+
+	public UMLLine(UMLShape firstSelectedShape, UMLShape secondSelectedShape,
+				   UMLCanvas mycanvas, String lT) {
+		linetype = lT;
 		arrowhead = convertLineTip(linetype);
 
 		this.setOpaque(false);
