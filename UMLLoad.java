@@ -11,157 +11,163 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * Handles the loading of diagrams previously saved as XML files.
+ * 
+ * @author Team MacroHard
+ *
+ */
 public class UMLLoad {
 
-    private String filePath = "";
+	private String filePath = "";
 
-    Document dom = null;
+	Document dom = null;
 
-    UMLCanvas myCanvas = null;
+	UMLCanvas myCanvas = null;
 
-    private Hashtable<Integer, UMLShape_Class> shapesList = null;
-    private ArrayList<UMLLine> linesList = null;
-    private Hashtable<Integer, UMLShape_CommentBox> commentBoxList = null;
+	private Hashtable<Integer, UMLShape_Class> shapesList = null;
+	private ArrayList<UMLLine> linesList = null;
+	private Hashtable<Integer, UMLShape_CommentBox> commentBoxList = null;
 
-    public UMLLoad(String file, UMLCanvas canvas) {
-        filePath = file;
-        myCanvas = canvas;
-        shapesList = new Hashtable<Integer, UMLShape_Class>();
-        linesList = new ArrayList<UMLLine>();
-        commentBoxList = new Hashtable<Integer, UMLShape_CommentBox>();
-        parseXmlFile();
-        parseDocument();
+	public UMLLoad(String file, UMLCanvas canvas) {
+		filePath = file;
+		myCanvas = canvas;
+		shapesList = new Hashtable<Integer, UMLShape_Class>();
+		linesList = new ArrayList<UMLLine>();
+		commentBoxList = new Hashtable<Integer, UMLShape_CommentBox>();
+		parseXmlFile();
+		parseDocument();
 
+	}
 
-    }
+	private void parseXmlFile() {
+		// get the factory
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-    private void parseXmlFile() {
-        //get the factory
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try {
 
-        try {
+			// Using factory get an instance of document builder
+			DocumentBuilder db = dbf.newDocumentBuilder();
 
-            //Using factory get an instance of document builder
-            DocumentBuilder db = dbf.newDocumentBuilder();
+			// parse using builder to get DOM representation of the XML file
+			dom = db.parse(filePath);
 
-            //parse using builder to get DOM representation of the XML file
-            dom = db.parse(filePath);
+		} catch (ParserConfigurationException pce) {
+			pce.printStackTrace();
+		} catch (SAXException se) {
+			se.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
 
+	private void parseDocument() {
+		// get the root elememt
+		Element docEle = dom.getDocumentElement();
 
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        } catch (SAXException se) {
-            se.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
+		// get a nodelist of <employee> elements
+		NodeList shapeNodeList = docEle.getElementsByTagName("Shape");
+		if (shapeNodeList != null && shapeNodeList.getLength() > 0) {
+			for (int i = 0; i < shapeNodeList.getLength(); i++) {
 
-    private void parseDocument() {
-        //get the root elememt
-        Element docEle = dom.getDocumentElement();
+				// get the employee element
+				Element el = (Element) shapeNodeList.item(i);
 
-        //get a nodelist of <employee> elements
-        NodeList shapeNodeList = docEle.getElementsByTagName("Shape");
-        if (shapeNodeList != null && shapeNodeList.getLength() > 0) {
-            for (int i = 0; i < shapeNodeList.getLength(); i++) {
+				// get the Employee object
+				UMLShape_Class sc = getShapeClass(el);
 
-                //get the employee element
-                Element el = (Element) shapeNodeList.item(i);
+				// add it to list
+				shapesList.put(sc.getID(), sc);
+			}
+		}
 
-                //get the Employee object
-                UMLShape_Class sc = getShapeClass(el);
+		NodeList lineNodeList = docEle.getElementsByTagName("Line");
+		if (lineNodeList != null && lineNodeList.getLength() > 0) {
+			for (int i = 0; i < lineNodeList.getLength(); i++) {
 
-                //add it to list
-                shapesList.put(sc.getID(), sc);
-            }
-        }
+				// get the employee element
+				Element el = (Element) lineNodeList.item(i);
 
-        NodeList lineNodeList = docEle.getElementsByTagName("Line");
-        if (lineNodeList != null && lineNodeList.getLength() > 0) {
-            for (int i = 0; i < lineNodeList.getLength(); i++) {
+				// get the Employee object
+				UMLLine l = getLine(el);
 
-                //get the employee element
-                Element el = (Element) lineNodeList.item(i);
+				// add it to list
+				linesList.add(l);
+			}
+		}
 
-                //get the Employee object
-                UMLLine l = getLine(el);
+		NodeList commentBoxNodeList = docEle.getElementsByTagName("CommentBox");
+		if (commentBoxNodeList != null && commentBoxNodeList.getLength() > 0) {
+			for (int i = 0; i < commentBoxNodeList.getLength(); i++) {
 
-                //add it to list
-                linesList.add(l);
-            }
-        }
+				// get the employee element
+				Element el = (Element) commentBoxNodeList.item(i);
 
-        NodeList commentBoxNodeList = docEle.getElementsByTagName("CommentBox");
-        if (commentBoxNodeList != null && commentBoxNodeList.getLength() > 0) {
-            for (int i = 0; i < commentBoxNodeList.getLength(); i++) {
+				// get the Employee object
+				UMLShape_CommentBox sc = getShapeCommentBox(el);
 
-                //get the employee element
-                Element el = (Element) commentBoxNodeList.item(i);
+				// add it to list
+				commentBoxList.put(sc.getID(), sc);
+			}
+		}
+	}
 
-                //get the Employee object
-                UMLShape_CommentBox sc = getShapeCommentBox(el);
+	private UMLShape_Class getShapeClass(Element ele) {
+		int id = getIntValue(ele, "id");
+		int x = getIntValue(ele, "x");
+		int y = getIntValue(ele, "y");
+		String text = getTextValue(ele, "text");
+		System.out.println(text);
+		UMLShape_Class shape = new UMLShape_Class(x, y, id, false);
+		shape.setText(text);
+		return shape;
+	}
 
-                //add it to list
-                commentBoxList.put(sc.getID(), sc);
-            }
-        }
-    }
+	private UMLLine getLine(Element ele) {
+		int firstID = getIntValue(ele, "first");
+		int secondID = getIntValue(ele, "second");
+		return new UMLLine(shapesList.get(firstID), shapesList.get(secondID),
+				myCanvas);
+	}
 
-    private UMLShape_Class getShapeClass(Element ele) {
-        int id = getIntValue(ele, "id");
-        int x = getIntValue(ele, "x");
-        int y = getIntValue(ele, "y");
-        String text = getTextValue(ele, "text");
-        System.out.println(text);
-        UMLShape_Class shape = new UMLShape_Class(x, y, id, false);
-        shape.setText(text);
-        return shape;
-    }
+	private UMLShape_CommentBox getShapeCommentBox(Element ele) {
+		int id = getIntValue(ele, "id");
+		int x = getIntValue(ele, "x");
+		int y = getIntValue(ele, "y");
+		String text = getTextValue(ele, "text");
+		System.out.println(text);
+		UMLShape_CommentBox commentBox = new UMLShape_CommentBox(x, y, id,
+				false);
+		commentBox.setText(text);
+		return commentBox;
+	}
 
-    private UMLLine getLine(Element ele) {
-        int firstID = getIntValue(ele, "first");
-        int secondID = getIntValue(ele, "second");
-        return new UMLLine(shapesList.get(firstID), shapesList.get(secondID), myCanvas);
-    }
+	private String getTextValue(Element ele, String tagName) {
+		String textVal = null;
+		NodeList nl = ele.getElementsByTagName(tagName);
+		if (nl != null && nl.getLength() > 0) {
+			Element el = (Element) nl.item(0);
+			textVal = el.getFirstChild().getNodeValue();
+		}
 
-    private UMLShape_CommentBox getShapeCommentBox(Element ele) {
-        int id = getIntValue(ele, "id");
-        int x = getIntValue(ele, "x");
-        int y = getIntValue(ele, "y");
-        String text = getTextValue(ele, "text");
-        System.out.println(text);
-        UMLShape_CommentBox commentBox = new UMLShape_CommentBox(x, y, id, false);
-        commentBox.setText(text);
-        return commentBox;
-    }
+		return textVal;
+	}
 
-    private String getTextValue(Element ele, String tagName) {
-        String textVal = null;
-        NodeList nl = ele.getElementsByTagName(tagName);
-        if (nl != null && nl.getLength() > 0) {
-            Element el = (Element) nl.item(0);
-            textVal = el.getFirstChild().getNodeValue();
-        }
+	private int getIntValue(Element ele, String tagName) {
+		// in production application you would catch the exception
+		return Integer.parseInt(getTextValue(ele, tagName));
+	}
 
-        return textVal;
-    }
+	public Hashtable<Integer, UMLShape_Class> getShapes() {
+		return shapesList;
+	}
 
-    private int getIntValue(Element ele, String tagName) {
-        //in production application you would catch the exception
-        return Integer.parseInt(getTextValue(ele, tagName));
-    }
+	public ArrayList<UMLLine> getLines() {
+		return linesList;
+	}
 
-    public Hashtable<Integer, UMLShape_Class> getShapes() {
-        return shapesList;
-    }
-
-    public ArrayList<UMLLine> getLines() {
-        return linesList;
-    }
-
-    public Hashtable<Integer, UMLShape_CommentBox> getCommentBoxes() {
-        return commentBoxList;
-    }
+	public Hashtable<Integer, UMLShape_CommentBox> getCommentBoxes() {
+		return commentBoxList;
+	}
 
 }

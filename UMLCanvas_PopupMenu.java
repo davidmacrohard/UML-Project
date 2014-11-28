@@ -7,14 +7,33 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 
+/**
+ * Handles the popup menu that appears when right clicking
+ * on the canvas
+ * 
+ * @author Team MacroHard
+ *
+ */
 @SuppressWarnings("serial")
 public class UMLCanvas_PopupMenu extends JPopupMenu implements ActionListener {
 		
+	/**
+	 * New shape menu option
+	 */
 	private JMenuItem menu_NewShape = null;
+	/**
+	 * Rename tab menu option
+	 */
 	private JMenuItem menu_RenameTab = null;
 	
+	/**
+	 * Parent canvas of the popup menu (because multiple tabs)
+	 */
 	private UMLCanvas theParent = null;
 	
+	/**
+	 * @param parent	The parent canvas of this popup menu
+	 */
 	UMLCanvas_PopupMenu(UMLCanvas parent)
 	{
 		// Set the parent object of this menu
@@ -37,6 +56,9 @@ public class UMLCanvas_PopupMenu extends JPopupMenu implements ActionListener {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == menu_NewShape)

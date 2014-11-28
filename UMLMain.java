@@ -1,35 +1,39 @@
 import java.awt.BorderLayout;
 import javax.swing.JToolBar;
 
-
+/**
+ * Main method of the program. Sets up the GUI and initializes all aspects of
+ * the editor.
+ * 
+ * @author Team MacroHard
+ *
+ */
 public class UMLMain {
 
-    // Add getters and set to private
-    public static UMLMainWindow mainWindow = null;
-    public static UMLToolBar umlToolBar = null;
-    public static UMLMainMenu mainMenu = null;
-    public static UMLTabbedPanel umlTabbedPanel = null;
+	// Add getters and set to private
+	public static UMLMainWindow mainWindow = null;
+	public static UMLToolBar umlToolBar = null;
+	public static UMLMainMenu mainMenu = null;
+	public static UMLTabbedPanel umlTabbedPanel = null;
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        mainWindow = new UMLMainWindow();
-        umlToolBar = new UMLToolBar("UML_Main_ToolBar", JToolBar.VERTICAL);
-        mainMenu = new UMLMainMenu(mainWindow);
+		mainWindow = new UMLMainWindow();
+		umlToolBar = new UMLToolBar("UML_Main_ToolBar", JToolBar.VERTICAL);
+		mainMenu = new UMLMainMenu(mainWindow);
 
+		mainWindow.add(umlToolBar, BorderLayout.WEST);
+		mainWindow.setJMenuBar(mainMenu);
 
-        mainWindow.add(umlToolBar, BorderLayout.WEST);
-        mainWindow.setJMenuBar(mainMenu);
+		umlTabbedPanel = new UMLTabbedPanel(umlToolBar);
+		// Default starting tab
+		umlTabbedPanel.AddNewTab();
+		mainWindow.add(umlTabbedPanel, BorderLayout.CENTER);
 
-        umlTabbedPanel = new UMLTabbedPanel(umlToolBar);
-        // Default starting tab
-        umlTabbedPanel.AddNewTab();
-        mainWindow.add(umlTabbedPanel, BorderLayout.CENTER);
+		mainMenu.SetUMLTabbedPanel(umlTabbedPanel);
+		mainWindow.setUMLTabbedPanel(umlTabbedPanel);
 
-        mainMenu.SetUMLTabbedPanel(umlTabbedPanel);
-        mainWindow.setUMLTabbedPanel(umlTabbedPanel);
-
-        mainWindow.setVisible(true);
-    }
-
+		mainWindow.setVisible(true);
+	}
 
 }
