@@ -234,5 +234,13 @@ public class UMLShape_Class extends UMLShape{
 		
 
 	}
+	
+	public String getText() {
+		return classText.getText();
+	}
+	
+	public void setText(String text) {
+		classText.setText(text);
+	}
 
 }

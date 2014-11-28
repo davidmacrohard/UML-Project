@@ -204,6 +204,21 @@ public class UMLTabbedPanel extends JTabbedPane implements ActionListener {
 		
 	}
 	
+	public void RenameTab(String title)
+	{
+		if(this.getTabCount() > 1)
+		{
+			if(title != "")
+			{			
+				JPanel panel = (JPanel) this.getTabComponentAt(getSelectedIndex());			
+				JLabel label = (JLabel) panel.getComponent(0);
+				label.setText(title);
+			}
+
+		}
+		
+	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -23,7 +23,7 @@ public class UMLLoad {
     private ArrayList<UMLLine> linesList = null;
 
     public UMLLoad(String file, UMLCanvas canvas) {
-        filePath = file; //file;
+        filePath = file;
         myCanvas = canvas;
         shapesList = new Hashtable<Integer, UMLShape_Class>();
         linesList = new ArrayList<UMLLine>();
@@ -97,7 +97,9 @@ public class UMLLoad {
         int y = getIntValue(ele, "y");
         String text = getTextValue(ele, "text");
         System.out.println(text);
-        return new UMLShape_Class(x, y, id, false);
+        UMLShape_Class shape = new UMLShape_Class(x, y, id, false);
+        shape.setText(text);
+        return shape;
     }
 
     private UMLLine getLine(Element ele) {
