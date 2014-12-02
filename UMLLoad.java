@@ -126,8 +126,11 @@ public class UMLLoad {
 	private UMLLine getLine(Element ele) {
 		int firstID = getIntValue(ele, "first");
 		int secondID = getIntValue(ele, "second");
+		//String type = getTextValue(ele, "type");
+		String type = ele.getAttribute("type");
+		System.out.println(type);
 		return new UMLLine(shapesList.get(firstID), shapesList.get(secondID),
-				myCanvas);
+				myCanvas, type);
 	}
 
 	private UMLShape_CommentBox getShapeCommentBox(Element ele) {

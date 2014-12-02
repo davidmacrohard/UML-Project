@@ -129,7 +129,7 @@ public class UMLSave {
 
 	private static Element createLineElement(UMLLine line) {
 		Element lineEle = dom.createElement("Line");
-		lineEle.setAttribute("type", "Arrow");
+		lineEle.setAttribute("type", line.getType());
 
 		Element firstEle = dom.createElement("first");
 		Text firstText = dom.createTextNode("" + line.getFirst().getID());
@@ -140,7 +140,12 @@ public class UMLSave {
 		Text secondText = dom.createTextNode("" + line.getSecond().getID());
 		secondEle.appendChild(secondText);
 		lineEle.appendChild(secondEle);
-
+		
+		//Element typeEle = dom.createElement("type");
+		//Text typeText = dom.createTextNode("" + line.getType());
+		//typeEle.appendChild(typeText);
+		//lineEle.appendChild(typeEle);
+		
 		return lineEle;
 	}
 

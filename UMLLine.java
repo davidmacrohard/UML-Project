@@ -149,6 +149,7 @@ public class UMLLine extends JPanel {
 							.getHeight() / 2)));
 			{
 				try {
+					System.out.println("Arrow head is " + arrowhead);
 					image = ImageIO.read(this.getClass().getResource(
 							"images/" + arrowhead));
 
@@ -243,6 +244,10 @@ public class UMLLine extends JPanel {
 	public UMLShape getSecond() {
 		return secondSelectedShape;
 	}
+	
+	public String getType() {
+		return linetype;
+	}
 
 	/**
 	 * Creates a JOptionPane so the user can select which arrowhead the user
@@ -275,22 +280,22 @@ public class UMLLine extends JPanel {
 	private String convertLineTip(String arrowhead) {
 		String input = null;
 
-		if (arrowhead == "Dependency" || arrowhead == "Directed Association") {
+		if (arrowhead.equals("Dependency") || arrowhead.equals("Directed Association")) {
 			input = "arrowhead.png";
 		}
 
-		if (arrowhead == "Composition") {
+		if (arrowhead.equals("Composition")) {
 			input = "diamond.png";
 		}
 
-		if (arrowhead == "Generalization") {
+		if (arrowhead.equals("Generalization")) {
 			input = "arrow.png";
 		}
 
-		if (arrowhead == "Aggregation") {
+		if (arrowhead.equals("Aggregation")) {
 			input = "filleddiamond.png";
 		}
-
+		System.out.println("Input is " + arrowhead);
 		return input;
 	}
 
